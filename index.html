@@ -3,52 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wintra — Ödeme</title>
-  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-  <script defer src="../js/web3buy.js"></script>
+  <title>Wintra — Gölgelerin Ötesinde</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      background:#0a1320;
-      color:#d6f3ff;
-      margin:0;
-      padding:0;
-    }
-    .card {
-      background:#0f1d30;
-      border:1px solid #184b63;
-      border-radius:16px;
-      padding:20px;
-      max-width:720px;
-      margin:40px auto;
-    }
-    button {
-      background:#14a1c0;
-      border:none;
-      border-radius:12px;
-      padding:12px 16px;
-      font-weight:700;
-      cursor:pointer;
-    }
-    a {
-      color:#93e7ff;
-      text-decoration:none;
-    }
-    a:hover {
-      text-decoration:underline;
-    }
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0a1320;color:#d6f3ff;margin:0}
+    .nav{border-bottom:1px solid #184b63;background:#0f1d30}
+    .container{max-width:980px;margin:0 auto;padding:16px}
+    .brand{font-weight:800}
+    .links a{margin-left:12px;color:#93e7ff;text-decoration:none}
+    .hero{padding:28px 0}
+    .grid{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
+    .card{background:#0f1d30;border:1px solid #184b63;border-radius:16px;padding:16px}
+    .badge{display:inline-block;background:#13334b;border:1px solid #184b63;border-radius:999px;padding:4px 10px;margin-bottom:6px}
+    .btn{display:inline-block;background:#14a1c0;border:0;border-radius:12px;padding:10px 14px;font-weight:700;color:#001018;text-decoration:none}
+    footer{border-top:1px solid #184b63;background:#0f1d30;padding:16px;margin-top:24px}
   </style>
 </head>
 <body>
+  <header class="nav">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center">
+      <div class="brand">Wintra</div>
+      <nav class="links">
+        <a href="catalog.html">Katalog</a>
+        <a href="wtr.html">WTR Cüzdan</a>
+      </nav>
+    </div>
+  </header>
 
-  <div class="card">
-    <a href="/wintra-pay/">← Ana sayfaya dön</a>
-    <h1>WTR ile Satın Al</h1>
-    <p>Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.</p>
-    <p><strong>Fiyat:</strong> Ürün başına <span id="price">WTR</span></p>
-    <br>
-    <button id="btn-connect">Cüzdan Bağla</button>
-  </div>
+  <section class="hero">
+    <div class="container grid">
+      <div>
+        <h1>Oku, Sahip Ol, İstersen Sat</h1>
+        <p class="muted">Dijital ürünleri <strong>WTR</strong> ile satın al. Okuduktan sonra aynı WTR fiyatıyla tekrar sat.</p>
+        <div style="margin-top:18px">
+          <a class="btn" href="catalog.html">Kataloğa git</a>
+        </div>
+      </div>
 
+      <aside class="card">
+        <div class="badge">Dijital • E-Kitap</div>
+        <h3 style="margin:8px 0 6px">Gölgelerin Ötesinde</h3>
+        <p style="margin:0;opacity:.8">Fantastik roman • 1000 WTR</p>
+        <div style="margin-top:10px">
+          <!-- Satın al butonu ana sayfadan /pay sayfasına götürsün -->
+          <a class="btn" href="pay/">Satın Al</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© 2025 Wintra • WTR Market • Twitter &amp; Telegram — yakında</div>
+  </footer>
 </body>
 </html>
