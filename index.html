@@ -1,25 +1,54 @@
-<!doctype html><html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Wintra — Gölgelerin Ötesinde</title><link rel="icon" href="assets/golgelerin-otesinde.jpg"><link rel="stylesheet" href="style.css"></head>
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wintra — Ödeme</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script defer src="../js/web3buy.js"></script>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background:#0a1320;
+      color:#d6f3ff;
+      margin:0;
+      padding:0;
+    }
+    .card {
+      background:#0f1d30;
+      border:1px solid #184b63;
+      border-radius:16px;
+      padding:20px;
+      max-width:720px;
+      margin:40px auto;
+    }
+    button {
+      background:#14a1c0;
+      border:none;
+      border-radius:12px;
+      padding:12px 16px;
+      font-weight:700;
+      cursor:pointer;
+    }
+    a {
+      color:#93e7ff;
+      text-decoration:none;
+    }
+    a:hover {
+      text-decoration:underline;
+    }
+  </style>
+</head>
 <body>
-<header class="nav"><div class="container"><div class="brand">Wintra</div><nav class="links"><a href="catalog.html">Katalog</a><a href="wtr.html">WTR Cüzdan</a></nav></div></header>
-<section class="hero"><div class="container grid2">
-  <div>
-    <h1>Oku, Sahip Ol, İstersen Sat</h1>
-    <p class="sub">Dijital ürünleri <strong>WTR</strong> ile satın al. Okuduktan sonra aynı WTR fiyatıyla tekrar sat.</p>
-    <div style="margin-top:18px"><a class="btn" href="catalog.html">Kataloğa git</a></div>
+
+  <div class="card">
+    <a href="../index.html">← Ana sayfaya dön</a>
+    <h1>WTR ile Satın Al</h1>
+    <p>Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.</p>
+    <p><strong>Fiyat:</strong> Ürün başına <span id="price">WTR</span></p>
+    <br>
+    <button id="btn-connect">Cüzdan Bağla</button>
   </div>
-  <aside class="card">
-    <h3>Öne Çıkan</h3>
-    <div style="display:flex;gap:12px;align-items:center;margin-top:12px">
-      <img src="assets/golgelerin-otesinde.jpg" alt="Gölgelerin Ötesinde" style="width:140px;height:140px;border-radius:10px;object-fit:cover">
-      <div>
-        <div class="badge">Dijital • E-Kitap</div>
-        <h4 style="margin:8px 0 6px">Gölgelerin Ötesinde</h4>
-        <p style="margin:0;color:#a8cbbd">Fantastik roman • 1000 WTR</p>
-        <div style="margin-top:10px"><a class="btn" href="product.html?id=golgelerin-otesinde">Satın Al</a></div>
-      </div>
-    </div>
-  </aside>
-</div></section>
-<footer class="footer">© 2025 Wintra • WTR Market • Twitter & Telegram — yakında</footer>
-</body></html>
+
+</body>
+</html>
