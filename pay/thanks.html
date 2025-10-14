@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Teşekkürler</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#0a1320;color:#d6f3ff;margin:0}
+    .card{background:#0f1d30;border:1px solid #184b63;border-radius:16px;padding:20px;max-width:720px;margin:40px auto}
+    a.btn{display:inline-block;background:#14a1c0;color:#001018;padding:12px 16px;border-radius:12px;font-weight:700;text-decoration:none}
+    .muted{opacity:.8}
+    pre{background:#05101a;border-radius:10px;padding:12px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Teşekkürler 🎉</h1>
+    <div id="status" class="muted">Doğrulanıyor...</div>
+    <p><a id="download" class="btn" href="/pay/public/downloads/wintra-sample.pdf" style="display:none">PDF'yi indir</a></p>
+    <pre id="log" style="display:none"></pre>
+  </div>
+
+<script>
+(async () => {
+  // statik doğrulama (client-side)
+  const cfg = await (await fetch('/pay/data/payment.json')).json();
+  const abi = await (await fetch('/pay/data/wtr-abi.json')).json();
+  const products = await (await fetch('/pay/data/products.json')).json();
+
+  const url = new URL(location.href);
+  const txHash = url.searchParams.get('tx');
+  const sku = url.searchParams.get('sku');
+
+  const log = (...a)=>{ const el=document.getElementById('log'); el.style.display='block'; el.textContent += a.join(' ') + '\n'; };
+
+  if (!txHash){ document.getElementById('status').textContent = 'Tx parametresi yok'; return; }
+
+  try{
+    const provider = new ethers.providers.JsonRpcProvider('https://bsc-dataseed.binance.org/');
+    const receipt = await provider.getTransactionReceipt(txHash);
+    if (!receipt || receipt.status !== 1) {
+      document.getElementById('status').textContent = 'Tx bulunamadı veya başarısız';
+      return;
+    }
+    if (receipt.to?.toLowerCase() !== cfg.token.toLowerCase()){
+      document.getElementById('status').textContent = 'Bu tx WTR sözleşmesine ait değil';
+      return;
+    }
+
+    const iface = new ethers.utils.Interface(abi);
+    const requiredHuman = ( (products.items||[]).find(i=>i.sku===sku)?.priceHuman ) || cfg.priceHuman;
+    const required = ethers.utils.parseUnits(String(requiredHuman), cfg.decimals || 18);
+
+    let paid = ethers.BigNumber.from(0);
+    for (const lg of receipt.logs || []) {
+      if ((lg.address||'').toLowerCase() !== cfg.token.toLowerCase()) continue;
+      try{
+        const parsed = iface.parseLog(lg);
+        if (parsed.name === 'Transfer' && parsed.args.to.toLowerCase() === cfg.seller.toLowerCase()){
+          paid = paid.add(parsed.args.value);
+        }
+      }catch{}
+    }
+
+    if (paid.gte(required)){
+      document.getElementById('status').textContent = 'Doğrulandı ✓';
+      document.getElementById('download').style.display = 'inline-block';
+    } else {
+      document.getElementById('status').textContent = 'Ödenen tutar yetersiz';
+    }
+  }catch(e){
+    document.getElementById('status').textContent = 'Doğrulama hatası';
+    log(e.message || String(e));
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WTR Bağlantı Testi</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,sans-serif;background:#0a1320;color:#d6f3ff;padding:24px}
+    .card{background:#0f1d30;border:1px solid #184b63;border-radius:14px;padding:20px;max-width:720px;margin:0 auto}
+    button{background:#14a1c0;color:#001018;border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer}
+    pre{background:#05101a;border-radius:10px;padding:12px;overflow:auto}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>MetaMask Bağlantı Testi</h1>
+    <p>Bu sayfa sadece cüzdan bağlantısını test eder. Başarılı olursa /pay sayfası da çalışır.</p>
+    <ol>
+      <li>MetaMask eklentinizin <b>aktif</b> olduğundan emin olun.</li>
+      <li>Aşağıdaki düğmelere sırayla basın.</li>
+    </ol>
+    <p>
+      <button id="btn-detect">1) MetaMask algıla</button>
+      <button id="btn-connect">2) Cüzdan bağla (eth_requestAccounts)</button>
+      <button id="btn-switch">3) BSC 56'ya geç</button>
+    </p>
+    <h3>Çıktı</h3>
+    <pre id="out">Hazır...</pre>
+  </div>
+  <script src="/pay/js/connect-test.js"></script>
+</body>
+</html>

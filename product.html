@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ürün — Wintra</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="nav">
+    <div class="container">
+      <div class="brand">Wintra</div>
+    </div>
+  </header>
+
+  <main class="container" style="padding:40px 0;text-align:center">
+    <h2 id="pTitle"></h2>
+    <p id="pDesc"></p>
+    <p><strong id="pPrice"></strong> WTR</p>
+    <a href="/pay/" class="btn">WTR ile Satın Al</a>
+  </main>
+
+  <footer class="footer">© 2025 Wintra</footer>
+
+  <script>
+    const pid = new URL(location.href).searchParams.get('id');
+    fetch('data/products.json')
+      .then(r => r.json())
+      .then(items => {
+        const p = items.find(x => x.id === pid) || items[0];
+        document.getElementById('pTitle').textContent = p.title;
+        document.getElementById('pDesc').textContent = p.description;
+        document.getElementById('pPrice').textContent = p.price;
+      });
+  </script>
+</body>
+</html>
