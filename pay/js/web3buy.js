@@ -133,3 +133,14 @@ document.addEventListener('DOMContentLoaded', () => {
     c.addEventListener('click', connectWallet);
   }
 });
+document.addEventListener('DOMContentLoaded', () => {
+  const connectBtn = document.querySelector('#btn-connect');
+  if (connectBtn) {
+    connectBtn.addEventListener('click', connectWallet);
+  }
+
+  // Sayfa açıldığında butonu da yeniden çiz
+  if (window.ethereum && ethereum.selectedAddress) {
+    renderBuyUI();
+  }
+});
