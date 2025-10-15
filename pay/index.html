@@ -35,15 +35,41 @@
 
 <script>
 (function(){
-  // ====== KONFİG (küçük harfle yazdım, checksum zorlamayalım) ======
-  const CONFIG = {
+  // ====== K O N F İ G ======
+  const RAW = {
     chainIdHex: "0x38", // BSC Mainnet
-    token:  "0xf5b1160d39da31f0dcc0afa14f220da50af7dbf", // WTR kontratı
-    seller: "0xe8db729e3b9d1263a60304a49d5d24563488afac", // senin cüzdan
+    token:  "0xf5B1160d39dA31f0DCC0AfA14f220dA50Af7dbf", // WTR kontratı (senin verdiğin)
+    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac", // ödeme gidecek cüzdan
     priceWTR: "1000"
   };
 
-  // ====== BASİT YARDIMCILAR ======
+  // Adres temizleyici: görünmez boşlukları sil + küçük harf + checksum
+  function normalizeAddress(s){
+    const cleaned = String(s)
+      .trim()
+      .replace(/\u200B/g, "")   // zero-width space
+      .replace(/\u00A0/g, "")   // non-breaking space
+      .replace(/\s/g, "")       // klasik boşluklar
+      .toLowerCase();           // checksum hesaplamasını garantilemek için
+    if(!ethers.utils.isAddress(cleaned)) throw new Error("Geçersiz adres: " + s);
+    return ethers.utils.getAddress(cleaned); // doğru checksummed
+  }
+
+  let CONFIG;
+  try{
+    CONFIG = {
+      chainIdHex: RAW.chainIdHex,
+      token:  normalizeAddress(RAW.token),
+      seller: normalizeAddress(RAW.seller),
+      priceWTR: RAW.priceWTR.trim()
+    };
+    console.log("CONFIG", CONFIG);
+  }catch(e){
+    alert("Adres biçimi hatalı: " + (e?.message || e));
+    throw e;
+  }
+
+  // ====== BASİT YARDIMCI ======
   const $ = (q)=>document.querySelector(q);
   const say = (m)=>alert(m);
 
@@ -88,6 +114,7 @@
 
       await switchToBSC();
 
+      // >>> Burada artık normalize edilmiş, checksum'lu adres kullanıyoruz
       token = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
       tokenDecimals = await token.decimals();
 
@@ -148,7 +175,6 @@
   document.addEventListener("DOMContentLoaded", ()=>{
     const c = $("#btn-connect");
     if(c) c.addEventListener("click", connectWallet);
-    // Cüzdan hali hazırda bağlıysa fiyat ve butonu yine de çiz:
     $("#price").textContent = CONFIG.priceWTR;
   });
 })();
