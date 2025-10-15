@@ -7,8 +7,7 @@
 
   <!-- Ethers.js -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
-
-  <!-- Dış JS (doğru yol) -->
+  <!-- Ödeme scripti -->
   <script defer src="./js/web3buy.js"></script>
 
   <style>
@@ -17,53 +16,25 @@
     button{background:#14a1c0;color:#001018;border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
     button[disabled]{opacity:.6}
     a{color:#93e7ff;text-decoration:none}
+    .sku{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #184b63}
+    .muted{opacity:.8}
   </style>
 </head>
 <body>
   <div class="card">
     <a href="../index.html">← Ana sayfaya dön</a>
+
     <h1>WTR ile Satın Al</h1>
     <p>Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.</p>
+
+    <!-- Fiyat metni: JS buraya fiyat rakamını yazar -->
     <p><strong>Fiyat:</strong> Ürün başına <span id="price"></span> WTR</p>
+
+    <!-- Ürün ve “1000 WTR ile Öde” butonu buraya çizilir -->
     <div id="products"></div>
+
     <br>
     <button id="btn-connect">Cüzdan Bağla</button>
   </div>
-
-  <!-- Yedek bağlan kodu: dış JS gelmese bile MetaMask açılır -->
-  <script>
-  (function(){
-    // dış web3buy.js kendi handler'ını eklemediyse yedek bağlan ekle
-    const btn = document.getElementById('btn-connect');
-    if (!btn) return;
-    const already = btn.getAttribute('data-wtr-bound');
-    if (already) return;
-    btn.setAttribute('data-wtr-bound','1');
-
-    btn.addEventListener('click', async () => {
-      try{
-        if (!window.ethereum){ alert('MetaMask bulunamadı'); return; }
-        await ethereum.request({ method:'eth_requestAccounts' });
-        // BSC'ye geç
-        try {
-          await ethereum.request({ method:'wallet_switchEthereumChain', params:[{ chainId:'0x38' }] });
-        } catch(e){
-          if (e.code === 4902){
-            await ethereum.request({ method:'wallet_addEthereumChain', params:[{
-              chainId:'0x38',
-              chainName:'Binance Smart Chain',
-              rpcUrls:['https://bsc-dataseed.binance.org/'],
-              nativeCurrency:{ name:'BNB', symbol:'BNB', decimals:18 },
-              blockExplorerUrls:['https://bscscan.com']
-            }]} );
-          } else { throw e; }
-        }
-        alert('Cüzdan bağlandı ve BSC (56) ağı seçildi.');
-      }catch(err){
-        alert('Bağlantı hatası: ' + (err && err.message ? err.message : err));
-      }
-    });
-  })();
-  </script>
 </body>
 </html>
