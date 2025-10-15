@@ -38,8 +38,8 @@
   // ====== K O N F İ G ======
   const RAW = {
     chainIdHex: "0x38", // BSC Mainnet
-    token:  "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf", // WTR kontratı (senin verdiğin)
-    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac", // ödeme gidecek cüzdan
+    token:  "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf", // WTR kontratı (doğru)
+    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac",  // satış cüzdanın
     priceWTR: "1000"
   };
 
@@ -48,11 +48,11 @@
     const cleaned = String(s)
       .trim()
       .replace(/\u200B/g, "")   // zero-width space
-      .replace(/\u00A0/g, "")   // non-breaking space
-      .replace(/\s/g, "")       // klasik boşluklar
-      .toLowerCase();           // checksum hesaplamasını garantilemek için
+      .replace(/\u00A0/g, "")   // nbsp
+      .replace(/\s/g, "")       // klasik boşluk
+      .toLowerCase();
     if(!ethers.utils.isAddress(cleaned)) throw new Error("Geçersiz adres: " + s);
-    return ethers.utils.getAddress(cleaned); // doğru checksummed
+    return ethers.utils.getAddress(cleaned); // checksum
   }
 
   let CONFIG;
@@ -63,13 +63,12 @@
       seller: normalizeAddress(RAW.seller),
       priceWTR: RAW.priceWTR.trim()
     };
-    console.log("CONFIG", CONFIG);
   }catch(e){
     alert("Adres biçimi hatalı: " + (e?.message || e));
     throw e;
   }
 
-  // ====== BASİT YARDIMCI ======
+  // ====== yardımcılar ======
   const $ = (q)=>document.querySelector(q);
   const say = (m)=>alert(m);
 
@@ -114,7 +113,6 @@
 
       await switchToBSC();
 
-      // >>> Burada artık normalize edilmiş, checksum'lu adres kullanıyoruz
       token = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
       tokenDecimals = await token.decimals();
 
