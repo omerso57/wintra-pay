@@ -1,181 +1,221 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="tr">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wintra · Ödeme</title>
+  <title>Wintra — Ödeme</title>
 
-  <!-- Ethers.js (v5) -->
+  <!-- ethers v5 (UMD) -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 
   <style>
-    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0a1320;color:#d6f3ff;margin:0}
-    .card{background:#0f1d30;border:1px solid #184b63;border-radius:16px;padding:20px;max-width:720px;margin:40px auto}
-    button{background:#14a1c0;color:#001018;border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer}
-    button[disabled]{opacity:.6}
-    a{color:#93e7ff;text-decoration:none}
-    .sku{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed #184b63}
-    .muted{opacity:.8}
+    :root{
+      --bg:#0a1320; --card:#0f1d30; --line:#184b63; --text:#d6f3ff; --muted:#8acbdd; --accent:#93e7ff;
+      --btn:#14a1c0; --btnText:#001018;
+    }
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;}
+    .container{max-width:980px;margin:0 auto;padding:24px;}
+    .nav{display:flex;justify-content:space-between;align-items:center}
+    .brand{font-weight:700;letter-spacing:.5px}
+    .links a{color:var(--muted);text-decoration:none;margin-left:16px}
+    .card{
+      background:var(--card); border:1px solid var(--line); border-radius:16px;
+      padding:24px; margin-top:24px;
+    }
+    h1{margin:0 0 24px}
+    .row{display:flex;gap:18px;align-items:center;margin:8px 0}
+    .muted{color:var(--muted)}
+    .sku{display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed var(--line);padding:10px 0;margin:16px 0}
+    button{
+      background:var(--btn); color:var(--btnText); border:0; border-radius:12px;
+      padding:12px 18px; font-weight:700; cursor:pointer
+    }
+    button[disabled]{opacity:.6;cursor:not-allowed}
+    a.back{color:var(--accent);text-decoration:none}
+    pre#msg{
+      background:#08101d;border:1px dashed #184b63;border-radius:12px;
+      padding:14px;white-space:pre-wrap;color:#bfeaff
+    }
   </style>
 </head>
 <body>
-  <div class="card">
-    <a href="../index.html">← Ana sayfaya dön</a>
+  <div class="container">
+    <header class="nav">
+      <div class="brand">Wintra</div>
+      <div class="links"><a href="/wintra-pay/">Ana sayfa</a></div>
+    </header>
 
-    <h1>WTR ile Satın Al</h1>
-    <p>Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.</p>
+    <main class="card">
+      <p><a class="back" href="/wintra-pay/">← Ana sayfaya dön</a></p>
+      <h1>WTR ile Satın Al</h1>
 
-    <p><strong>Fiyat:</strong> Ürün başına <span id="price"></span> WTR</p>
+      <div class="row muted">
+        Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.
+      </div>
 
-    <div id="products"></div>
+      <div class="sku">
+        <div>
+          <div><strong>Ürün:</strong> Gölgelerin Ötesinde</div>
+          <div class="muted"><strong>Fiyat:</strong> <span id="price">10</span> WTR</div>
+        </div>
+        <div>
+          <button id="btn-connect">Cüzdan Bağla</button>
+          <button id="btn-buy" style="display:none;">10 WTR ile Öde</button>
+        </div>
+      </div>
 
-    <br />
-    <button id="btn-connect">Cüzdan Bağla</button>
+      <pre id="msg">Hazır...</pre>
+    </main>
+
+    <footer class="container muted" style="padding:16px 0;">
+      © 2025 Wintra
+    </footer>
   </div>
 
-<script>
-(function(){
-  // ====== K O N F İ G ======
-  const RAW = {
-    chainIdHex: "0x38", // BSC Mainnet
-    token:  "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf", // WTR kontratı (doğru)
-    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac",  // satış cüzdanın
-    priceWTR: "10"
-  };
+  <script>
+    // ---------- Yardımcılar ----------
+    const $ = (sel, root=document) => root.querySelector(sel);
+    const say = (txt) => { const el = $("#msg"); if(el) el.textContent = String(txt); };
 
-  // Adres temizleyici: görünmez boşlukları sil + küçük harf + checksum
-  function normalizeAddress(s){
-    const cleaned = String(s)
-      .trim()
-      .replace(/\u200B/g, "")   // zero-width space
-      .replace(/\u00A0/g, "")   // nbsp
-      .replace(/\s/g, "")       // klasik boşluk
-      .toLowerCase();
-    if(!ethers.utils.isAddress(cleaned)) throw new Error("Geçersiz adres: " + s);
-    return ethers.utils.getAddress(cleaned); // checksum
-  }
-
-  let CONFIG;
-  try{
-    CONFIG = {
-      chainIdHex: RAW.chainIdHex,
-      token:  normalizeAddress(RAW.token),
-      seller: normalizeAddress(RAW.seller),
-      priceWTR: RAW.priceWTR.trim()
+    // ---------- Konfig ----------
+    const CONFIG = {
+      chainIdHex: "0x38", // BSC Mainnet
+      token:  "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf", // WTR (BEP-20)
+      seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac", // Satıcı cüzdan
+      priceWTR: "10" // Ürün fiyatı (WTR)
     };
-  }catch(e){
-    alert("Adres biçimi hatalı: " + (e?.message || e));
-    throw e;
-  }
 
-  // ====== yardımcılar ======
-  const $ = (q)=>document.querySelector(q);
-  const say = (m)=>alert(m);
+    // ---------- Minimal ERC20 ABI ----------
+    const ERC20_ABI = [
+      "function symbol() view returns (string)",
+      "function decimals() view returns (uint8)",
+      "function balanceOf(address owner) view returns (uint256)",
+      "function transfer(address to, uint256 amount) returns (bool)"
+    ];
 
-  let provider, signer, userAddress, token, tokenDecimals;
+    // ---------- Ethers Nesneleri ----------
+    let provider, signer, userAddress, token, tokenDecimals;
 
-  const ERC20_ABI = [
-    "function decimals() view returns (uint8)",
-    "function balanceOf(address) view returns (uint256)",
-    "function transfer(address to, uint256 amount) returns (bool)"
-  ];
-
-  async function ensureProvider(){
-    if(!window.ethereum) throw new Error("MetaMask bulunamadı!");
-    provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    signer = provider.getSigner();
-  }
-
-  async function switchToBSC(){
-    try{
-      await ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: CONFIG.chainIdHex }] });
-    }catch(err){
-      if(err.code === 4902){
-        await ethereum.request({
-          method:"wallet_addEthereumChain",
-          params:[{
-            chainId: CONFIG.chainIdHex,
-            chainName: "Binance Smart Chain",
-            rpcUrls: ["https://bsc-dataseed.binance.org/"],
-            nativeCurrency:{ name:"BNB", symbol:"BNB", decimals:18 },
-            blockExplorerUrls:["https://bscscan.com"]
-          }]
-        });
-      }else{ throw err; }
-    }
-  }
-
-  async function connectWallet(){
-    try{
-      await ensureProvider();
-      const accounts = await ethereum.request({ method:"eth_requestAccounts" });
-      userAddress = ethers.utils.getAddress(accounts[0]);
-
-      await switchToBSC();
-
-      token = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
-      tokenDecimals = await token.decimals();
-
-      const btn = $("#btn-connect");
-      if(btn){ btn.textContent = "Cüzdan Bağlı"; btn.disabled = true; }
-
-      renderBuyUI();
-      say("Cüzdan bağlandı ve BSC (56) ağı seçildi.");
-    }catch(e){
-      say("Bağlantı hatası: " + (e?.message || e));
-      console.error(e);
-    }
-  }
-
-  function renderBuyUI(){
-    const box = $("#products");
-    if(!box) return;
-    $("#price").textContent = CONFIG.priceWTR;
-
-    box.innerHTML = `
-      <div class="sku">
-        <div><div class="muted">Ürün</div><strong>Gölgelerin Ötesinde</strong></div>
-        <div><div class="muted">Fiyat</div><strong>${CONFIG.priceWTR} WTR</strong></div>
-      </div>
-      <div style="margin-top:12px">
-        <button id="btn-buy">1000 WTR ile Öde</button>
-      </div>
-    `;
-
-    const b = $("#btn-buy");
-    if(b){ b.addEventListener("click", buyNow); }
-  }
-
-  async function buyNow(){
-    try{
-      if(!signer) await connectWallet();
-      const amount = ethers.utils.parseUnits(CONFIG.priceWTR, tokenDecimals);
-
-      const bal = await token.balanceOf(userAddress);
-      if(bal.lt(amount)) return say("Yetersiz WTR bakiyesi!");
-
-      const tx = await token.transfer(CONFIG.seller, amount);
-      say("Ödeme gönderildi. Onay bekleniyor...");
-      const rec = await tx.wait(1);
-      if(rec.status === 1){
-        say("✅ Ödeme başarılı! (İndirme/teşekkür sayfasına yönlendirebilirsin)");
-        // window.location.href = "../public/downloads/tesekkurler.html";
-      }else{
-        say("⚠️ İşlem başarısız!");
+    async function ensureProvider(){
+      if(typeof window.ethereum === "undefined"){
+        throw new Error("MetaMask/compatible cüzdan gerekli.");
       }
-    }catch(e){
-      say("Ödeme hatası: " + (e?.message || e));
-      console.error(e);
+      provider = new ethers.providers.Web3Provider(window.ethereum, "any");
+      signer   = provider.getSigner();
+      return provider;
     }
-  }
 
-  // Sayfa açılışı
-  document.addEventListener("DOMContentLoaded", ()=>{
-    const c = $("#btn-connect");
-    if(c) c.addEventListener("click", connectWallet);
-    $("#price").textContent = CONFIG.priceWTR;
-  });
-})();
-</script>
+    async function switchToBSC(){
+      const cid = await provider.send("eth_chainId", []);
+      if (cid !== CONFIG.chainIdHex){
+        try{
+          await provider.send("wallet_switchEthereumChain", [{ chainId: CONFIG.chainIdHex }]);
+        }catch(e){
+          if(e?.code === 4902){ // ağ ekli değil
+            await provider.send("wallet_addEthereumChain", [{
+              chainId: CONFIG.chainIdHex,
+              chainName: "BNB Smart Chain",
+              nativeCurrency:{ name:"BNB", symbol:"BNB", decimals:18 },
+              rpcUrls:["https://bsc-dataseed.binance.org"],
+              blockExplorerUrls:["https://bscscan.com"]
+            }]);
+          }else{
+            throw e;
+          }
+        }
+      }
+    }
+
+    function renderBuyUI(){
+      // fiyat yazıları
+      const p = CONFIG.priceWTR;
+      const priceEl = $("#price");
+      if (priceEl) priceEl.textContent = p;
+
+      const buyBtn = $("#btn-buy");
+      if(buyBtn){
+        buyBtn.textContent = `${p} WTR ile Öde`;
+        buyBtn.style.display = "inline-block";
+        buyBtn.onclick = buyNow;
+      }
+    }
+
+    // ---------- Cüzdan Bağla ----------
+    async function connectWallet(){
+      try{
+        await ensureProvider();
+        const accounts = await ethereum.request({ method:"eth_requestAccounts" });
+        userAddress = ethers.utils.getAddress(accounts[0]);
+
+        await switchToBSC();
+
+        token = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
+        tokenDecimals = await token.decimals();
+
+        // bakiye göster
+        const rawBal = await token.balanceOf(userAddress);
+        const humanBal = ethers.utils.formatUnits(rawBal, tokenDecimals);
+        say(`Cüzdan bağlandı.\nAğ: BSC (56)\nWTR bakiyen: ${humanBal}`);
+
+        const btn = $("#btn-connect");
+        if(btn){ btn.textContent = "Cüzdan Bağlı"; btn.disabled = true; }
+
+        renderBuyUI();
+      }catch(e){
+        say("Bağlantı hatası: " + (e?.message || e));
+        console.error(e);
+      }
+    }
+
+    // ---------- Ödeme ----------
+    async function buyNow(){
+      try{
+        if(!signer) await connectWallet();
+
+        // ödenecek miktar
+        const amount = ethers.utils.parseUnits(CONFIG.priceWTR, tokenDecimals);
+
+        // bakiye kontrol
+        const rawBal = await token.balanceOf(userAddress);
+        if(rawBal.lt(amount)){
+          const have = ethers.utils.formatUnits(rawBal, tokenDecimals);
+          const need = ethers.utils.formatUnits(amount, tokenDecimals);
+          return say(`Yetersiz WTR bakiyesi.\nSende: ${have} WTR\nGerekli: ${need} WTR`);
+        }
+
+        // ön kontrol: transfer revert eder mi?
+        try{ await token.callStatic.transfer(CONFIG.seller, amount); }
+        catch(pre){
+          return say(
+            "Token transferi reddedildi (ön-kontrol).\n" +
+            "Muhtemel nedenler: vergi/limit/blacklist vb.\nDetay: " +
+            (pre?.error?.message || pre?.message || pre)
+          );
+        }
+
+        // gerçek transfer
+        const tx = await token.transfer(CONFIG.seller, amount);
+        say("Ödeme gönderildi. Onay bekleniyor...");
+        const rec = await tx.wait(1);
+
+        if(rec.status === 1){
+          say("✅ Ödeme başarılı! Dosya indirmeyi/teşekkür sayfasını bağlayabilirsin.");
+          // window.location.href = "/wintra-pay/public/downloads/tesekkurler.html";
+        }else{
+          say("⚠️ İşlem başarısız.");
+        }
+      }catch(e){
+        say("Ödeme hatası:\n" + (e?.error?.message || e?.message || e));
+        console.error(e);
+      }
+    }
+
+    // ---------- Olaylar ----------
+    document.addEventListener("DOMContentLoaded", ()=>{
+      $("#btn-connect")?.addEventListener("click", connectWallet);
+      // sayfa açılır açılmaz fiyat yazısı sabitlensin
+      renderBuyUI();
+    });
+  </script>
 </body>
 </html>
