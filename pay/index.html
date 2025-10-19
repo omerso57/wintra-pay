@@ -3,204 +3,160 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wintra — Ödeme</title>
+  <title>Wintra — WTR ile Ödeme</title>
   <link rel="icon" href="../assets/wtr.png" />
   <style>
-    :root{--bg:#0a1320;--card:#0f1d30;--acc:#93e7ff;--mut:#a8cbbd;--btn:#14a1c0;--btnTxt:#001018;--ok:#23d18b}
-    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:#e8f6ff;font-family:system-ui,Segoe UI,Roboto,sans-serif}
-    .wrap{max-width:980px;margin:40px auto;padding:0 20px}
+    :root{ --bg:#000; --text:#eaf5ff; --accent:#7df8d3; --accent-2:#a98cff; --accent-3:#dce6f0;
+           --grad:linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+           --mut:#9fb3c8; --border:1px solid rgba(255,255,255,.12); --card:rgba(15,20,26,.72); --radius:16px }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font:500 15px/1.5 'Inter',system-ui,sans-serif;min-height:100vh}
+    .spotlight{position:fixed;left:50%;top:-10vh;transform:translateX(-50%);width:140vw;height:60vh;pointer-events:none;z-index:0;
+      background:radial-gradient(ellipse at center, rgba(125,248,211,.18), rgba(125,248,211,0) 60%), radial-gradient(ellipse at center, rgba(169,140,255,.12), rgba(169,140,255,0) 70%);
+      filter:blur(28px) brightness(1.1)}
+    .wrap{position:relative;z-index:1;max-width:980px;margin:34px auto;padding:0 18px}
     .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-    a,button{font-weight:600}
-    a{color:var(--acc);text-decoration:none}
-    .card{background:var(--card);border:1px solid #184b63;border-radius:16px;padding:24px 24px 8px}
+    .brand{display:flex;gap:10px;align-items:center;text-decoration:none;color:var(--text)}
+    .logo{width:34px;height:34px;border-radius:10px;background:var(--grad);display:grid;place-items:center;color:#000;font-weight:800;border:var(--border)}
+    .btn-ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px rgba(200,209,218,.22);border:0;border-radius:12px;padding:10px 14px;cursor:pointer}
+    .btn-cta{background:var(--grad);color:#000;border:0;border-radius:12px;padding:12px 18px;cursor:pointer;box-shadow:0 6px 18px rgba(111,240,195,.25)}
+    .btn-cta[disabled]{opacity:.6;cursor:not-allowed}
+    .card{background:var(--card);border:var(--border);border-radius:var(--radius);padding:22px}
     .row{display:flex;gap:12px;flex-wrap:wrap}
-    .btn{background:var(--btn);color:var(--btnTxt);border:0;border-radius:12px;padding:12px 18px;cursor:pointer}
-    .btn[disabled]{opacity:.6;cursor:not-allowed}
+    .badge{display:inline-flex;gap:8px;align-items:center;padding:6px 10px;border-radius:999px;border:var(--border);background:rgba(255,255,255,.05)}
     .muted{color:var(--mut)}
-    pre{background:#07101d;border:1px dashed #184b63;border-radius:10px;padding:12px;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow:auto}
-    .tag{display:inline-flex;gap:6px;align-items:center;background:#09182a;border:1px solid #14344a;border-radius:999px;padding:6px 10px;margin:6px 6px 0 0}
-    .ok{color:var(--ok)}
+    pre{background:#07101d;border:1px dashed #184b63;border-radius:10px;padding:12px;white-space:pre-wrap;word-break:break-word;max-height:280px;overflow:auto;color:#cbe4ff}
   </style>
-  <!-- ethers v5 -->
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 </head>
 <body>
+  <div class="spotlight" aria-hidden="true"></div>
   <div class="wrap">
     <div class="header">
-      <a href="../index.html">← Ana sayfaya dön</a>
-      <div class="muted">Wintra</div>
+      <a class="brand" href="#" data-home>
+        <div class="logo">W</div><strong>Wintra</strong>
+      </a>
+      <div class="row">
+        <a class="btn-ghost" href="#" data-home>← Ana sayfa</a>
+      </div>
     </div>
 
     <div class="card">
-      <h1 style="margin:0 0 10px 0">WTR ile Satın Al</h1>
-      <div class="muted" style="margin-bottom:16px">Cüzdan bağla → BSC (56) → WTR ile öde → Onaydan sonra indir.</div>
+      <div class="row" style="justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h1 style="margin:0">WTR ile Öde</h1>
+        <span class="badge">BSC Mainnet • ChainId 56</span>
+      </div>
+      <p class="muted" style="margin:0 0 14px">Cüzdanı bağla → BSC (56) → WTR transfer → Onaydan sonra teslim.</p>
 
-      <div class="row" style="margin:12px 0 14px">
-        <div class="tag"><strong>Ürün:</strong> Gölgelerin Ötesinde</div>
-        <div class="tag"><strong>Fiyat:</strong> <span id="price">10</span> WTR</div>
-        <div class="tag"><strong>Ağ:</strong> BSC Mainnet (56)</div>
+      <div class="row" style="margin:8px 0 14px">
+        <span class="badge"><strong>Ürün:</strong> <span id="title">Gölgelerin Ötesinde</span></span>
+        <span class="badge"><strong>Fiyat:</strong> <span id="price">10</span> WTR</span>
+        <span class="badge"><strong>Alıcı:</strong> <span id="sellerShort">—</span></span>
       </div>
 
       <div class="row" style="margin:10px 0 18px">
-        <button class="btn" id="btn-connect">Cüzdan Bağla</button>
-        <button class="btn" id="btn-buy">10 WTR ile Öde</button>
+        <button class="btn-cta" id="btn-connect">Cüzdanı bağlayın</button>
+        <button class="btn-cta" id="btn-buy">WTR ile Öde</button>
       </div>
 
       <pre id="log" class="muted">Hazır…</pre>
-      <div class="muted" style="margin:10px 0 12px">
-        Not: İşlem onaylandıktan sonra indirme bağlantısı otomatik açılır.
-      </div>
+      <p class="muted" style="margin:10px 0 0">Onaydan sonra otomatik yönlendirme: <code>thanks.html</code></p>
     </div>
 
     <p class="muted" style="margin:14px 4px">© 2025 Wintra</p>
   </div>
 
   <script>
-  /******************
-   *  K O N F İ G   *
-   ******************/
   const CONFIG = {
-    chainId: 56,                                                // BSC Mainnet
-    token: "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf",        // WTR (BEP-20)
-    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac",       // Satıcı cüzdanı
-    priceWTR: 10                                                // ürün fiyatı (WTR)
+    chainId: 56,
+    token:  "0xf5B1160d39dA31f0DCC0AFaA14f220dA50AF7dbf",
+    seller: "0xe8db729E3B9D1263A60304A49D5d24563488aFac",
+    priceWTR: 10
   };
-
-  // Minimal ERC-20 ABI (decimals/balanceOf/transfer)
   const ERC20_ABI = [
     "function decimals() view returns (uint8)",
     "function balanceOf(address) view returns (uint256)",
     "function transfer(address to, uint256 amount) returns (bool)"
   ];
+  const $   = (q)=>document.querySelector(q);
+  const log = $("#log");
+  const say = (t)=>{ log.textContent = String(t); };
+  const add = (t)=>{ log.textContent += "\\n" + String(t); };
 
-  /******************
-   *  A R A Ç L A R *
-   ******************/
-  const $ = (q) => document.querySelector(q);
-  const logBox = $("#log");
-  const say = (t) => { logBox.textContent = String(t); };
-  const add = (t) => { logBox.textContent += "\n" + String(t); };
+  let provider, signer, user, token, tokenDecimals, amountWTR, memo;
+  function fmtAddr(a){ return a ? a.slice(0,6) + "…" + a.slice(-4) : "—"; }
+  function fmtNum(v, d=4){ try{ return Number(v).toLocaleString("tr-TR",{maximumFractionDigits:d}); }catch{ return String(v) } }
 
-  let provider, web3Provider, signer, user, token, tokenDecimals;
-
-  function hasMM(){
-    if(!window.ethereum){ say("MetaMask bulunamadı. Lütfen MetaMask kur."); return false; }
-    return true;
-  }
+  (function readQuery(){
+    const qs = new URLSearchParams(location.search);
+    amountWTR = Number(qs.get("amount") || CONFIG.priceWTR);
+    memo = qs.get("memo") || "";
+    $("#price").textContent = String(amountWTR);
+    $("#sellerShort").textContent = fmtAddr(CONFIG.seller);
+  })();
 
   async function ensureProvider(){
-    if(!hasMM()) throw new Error("no-metamask");
-    web3Provider = new ethers.providers.Web3Provider(window.ethereum, "any");
-    signer = web3Provider.getSigner();
-    provider = web3Provider; // kısayol
+    if(!window.ethereum){ say("MetaMask gerekli. Lütfen kurun."); throw new Error("no-metamask"); }
+    const web3 = new ethers.providers.Web3Provider(window.ethereum, "any");
+    provider = web3; signer = web3.getSigner(); return web3;
   }
-
   async function switchToBSC(){
-    // chainId hex ister
     const hex = "0x" + CONFIG.chainId.toString(16);
-    try{
-      await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: hex }]});
-    }catch(e){
-      // Ağ ekli değilse eklemeyi dene
+    try{ await window.ethereum.request({ method:"wallet_switchEthereumChain", params:[{ chainId: hex }]}); }
+    catch(e){
       if(e && e.code === 4902){
-        await window.ethereum.request({
-          method:"wallet_addEthereumChain",
-          params:[{
-            chainId: hex,
-            chainName: "BNB Smart Chain",
-            nativeCurrency: { name:"BNB", symbol:"BNB", decimals:18 },
-            rpcUrls: [
-              "https://bsc-dataseed.binance.org",
-              "https://rpc.ankr.com/bsc",
-              "https://bsc.publicnode.com"
-            ],
-            blockExplorerUrls:["https://bscscan.com"]
-          }]
-        });
-      }else{
-        throw e;
-      }
+        await window.ethereum.request({ method:"wallet_addEthereumChain", params:[{
+          chainId: hex, chainName:"BNB Smart Chain",
+          nativeCurrency:{ name:"BNB", symbol:"BNB", decimals:18 },
+          rpcUrls:["https://bsc-dataseed.binance.org","https://rpc.ankr.com/bsc","https://bsc.publicnode.com"],
+          blockExplorerUrls:["https://bscscan.com"]
+        }]});
+      } else { throw e; }
     }
   }
-
-  function fmt(v, d=4){
-    try{
-      return Number(v).toLocaleString("tr-TR", { maximumFractionDigits:d });
-    }catch(_){ return String(v); }
-  }
-
-  /******************
-   *  A K I Ş L A R *
-   ******************/
   async function connectWallet(){
     try{
-      say("Bağlanılıyor…");
+      say("Cüzdan bağlanıyor…");
       await ensureProvider();
-
-      // Hesap iste
       const accounts = await window.ethereum.request({ method:"eth_requestAccounts" });
       user = ethers.utils.getAddress(accounts[0]);
-
-      // BSC'ye geç
       await switchToBSC();
-
-      // Token nesnesi ve decimals
-      token  = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
+      token = new ethers.Contract(CONFIG.token, ERC20_ABI, signer);
       tokenDecimals = await token.decimals();
-
-      $("#btn-connect").textContent = "Cüzdan Bağlı";
-      $("#btn-connect").disabled = true;
-
-      say(`Cüzdan bağlandı ✅\nHesap: ${user}\nAğ: BSC (56)\nToken: ${CONFIG.token}`);
-    }catch(err){
-      console.error(err);
-      say(`Bağlantı hatası: ${err.message || err}`);
-    }
+      $("#btn-connect").textContent = "Cüzdan bağlı"; $("#btn-connect").disabled = true;
+      say(`Bağlandı ✅\\nHesap: ${user}\\nAğ: BSC (56)\\nToken: ${CONFIG.token}`);
+    }catch(err){ console.error(err); say("Bağlantı hatası: " + (err?.message||err)); }
   }
-
   async function buyNow(){
     try{
-      if(!signer) throw new Error("Lütfen önce cüzdan bağla.");
-
-      // Ağ ve hesap tekrar kontrol
+      if(!signer) throw new Error("Lütfen önce cüzdanı bağlayın.");
       const net = await provider.getNetwork();
-      if(Number(net.chainId) !== Number(CONFIG.chainId)){
-        await switchToBSC();
-      }
-
-      // Bakiyeyi kontrol et
-      const bal = await token.balanceOf(user);
-      const need = ethers.utils.parseUnits(String(CONFIG.priceWTR), tokenDecimals);
-      if(bal.lt(need)){
-        throw new Error(`Yetersiz WTR bakiyesi. Gerekli: ${fmt(ethers.utils.formatUnits(need, tokenDecimals))} WTR`);
-      }
-
+      if(Number(net.chainId) !== Number(CONFIG.chainId)) await switchToBSC();
+      const need = ethers.utils.parseUnits(String(amountWTR), tokenDecimals || 18);
+      const bal  = await token.balanceOf(user);
+      if(bal.lt(need)) throw new Error(`Yetersiz WTR. Gerekli: ${fmtNum(ethers.utils.formatUnits(need, tokenDecimals||18))} WTR`);
       say("İşlem hazırlanıyor… MetaMask onayı bekleniyor.");
       const tx = await token.transfer(CONFIG.seller, need);
-      say("İşlem gönderildi. Onay bekleniyor…\nTx: " + tx.hash);
-
+      say("İşlem gönderildi. Onay bekleniyor…\\nTx: " + tx.hash);
       const rec = await tx.wait();
       add("Onay: " + rec.transactionHash);
-      add("✅ Ödeme başarılı. İndirme açılıyor…");
-
-      // Onay sonrası teslim — basit: gizli bağlantı
-      // (Burasını kendi dosyanla değiştir: /public/downloads/kitap.pdf gibi)
-      window.location.href = "thanks.html";
-      
-    }catch(err){
-      console.error(err);
-      say(`Ödeme hatası: ${err.message || err}`);
-    }
+      add("✅ Ödeme başarılı. Yönlendiriliyor…");
+      const back = `thanks.html?paid=1&tx=${tx.hash}${memo ? `&memo=${encodeURIComponent(memo)}` : ""}`;
+      location.href = back;
+    }catch(err){ console.error(err); say("Ödeme hatası: " + (err?.message||err)); }
   }
-
-  /******************
-   *  E T K İ N L E R *
-   ******************/
   $("#btn-connect").addEventListener("click", connectWallet);
   $("#btn-buy").addEventListener("click", buyNow);
 
-  // Sayfayı açınca fiyat etiketini sabitle
-  $("#price").textContent = String(CONFIG.priceWTR);
+  // 🔧 BASE PATH FIX — ana sayfa linkleri
+  (function fixBase(){
+    let base = '/';
+    const parts = location.pathname.split('/').filter(Boolean);
+    if (location.hostname.endsWith('github.io') && parts.length > 0) {
+      base = '/' + parts[0] + '/';
+    }
+    document.querySelectorAll('[data-home]').forEach(a => a.setAttribute('href', base + 'index.html'));
+  })();
   </script>
 </body>
 </html>
