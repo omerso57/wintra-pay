@@ -5,66 +5,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wintra • Navbar v8 (desync + spotlight)</title>
   <style>
-    :root {
-      --bg: #000000;
-      --text: #eaf5ff;
-      --accent: #7df8d3;
-      --accent-2: #a98cff;
-      --accent-3: #dce6f0;
-      --grad: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
-      --border: 1px solid rgba(255,255,255,.12);
-      --radius: 16px;
+    /* Yalnızca değişkenler */
+    :root{
+      --bg:#000000; --text:#eaf5ff;
+      --accent:#7df8d3; --accent-2:#a98cff; --accent-3:#dce6f0;
+      --grad:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+      --border:1px solid rgba(255,255,255,.12); --radius:16px;
     }
-    body { margin:0; background:#000; color:var(--text); font:500 15px/1.5 'Inter', system-ui, sans-serif; overflow:hidden; height:100vh; }
 
-    /* 💫 W Partikül Yağmuru + Trail */
-    .particles { position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; mix-blend-mode: screen; }
-    .particle {
-      position:absolute; display:grid; place-items:center; border-radius:8px;
-      color:#000; font-weight:900; font-family: Inter, system-ui, sans-serif;
-      box-shadow:0 0 16px rgba(125,248,211,.35); opacity:.95; will-change: transform, opacity;
-      animation: fall linear forwards;
-      --dxStart: 0px; --dxEnd: 0px;
+    /* Genel */
+    body{ margin:0; background:#000; color:var(--text);
+      font:500 15px/1.5 Inter,system-ui,sans-serif;
+      overflow:auto; /* görünmezlik olmasın diye auto yaptık */
+      min-height:100vh;
     }
-    .particle span { filter: drop-shadow(0 1px 2px rgba(0,0,0,.6)); animation: spin 6s linear infinite; }
-    @keyframes fall { 0%{ transform: translate3d(var(--dxStart), -60px, 0); opacity:.95 } 100%{ transform: translate3d(var(--dxEnd), 105vh, 0); opacity:0 } }
-    @keyframes spin { from{ transform: rotate(0deg);} to{ transform: rotate(360deg);} }
 
-    .trail{ position:fixed; width:6px; height:6px; border-radius:50%; pointer-events:none; opacity:.55; filter:blur(0); will-change: transform, opacity; animation: trailFade .85s linear forwards; }
-    @keyframes trailFade{ from{ transform: translateY(0); opacity:.55; filter:blur(0);} to{ transform: translateY(12px); opacity:0; filter:blur(3px);} }
+    /* --- Wintra Home v2 --- */
+    .announcement{ background:linear-gradient(90deg,#7df8d3,#a98cff); color:#000; font-weight:700; text-align:center; padding:6px 10px; letter-spacing:.3px; }
+    .section{ max-width:1100px; margin:60px auto; padding:0 18px; } .section h2{ font-size:clamp(22px,3.4vw,30px); margin:0 0 14px; }
+    .features{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; margin-top:18px; }
+    .card{ padding:24px; border:1px solid rgba(255,255,255,.08); border-radius:16px; background:rgba(255,255,255,.03); backdrop-filter:blur(6px); box-shadow:0 6px 18px rgba(0,0,0,.25); transition:.25s; }
+    .card:hover{ transform:translateY(-6px); box-shadow:0 10px 28px rgba(0,0,0,.45); } .card h3{ margin:0 0 8px; font-size:18px }
+    .steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:12px; }
+    .step{ display:flex; gap:12px; align-items:flex-start; padding:16px; border:1px dashed rgba(255,255,255,.12); border-radius:14px; }
+    .step .num{ width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background:rgba(255,255,255,.08); font-weight:800; }
+    .partners{ display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; opacity:.9 } .partner{ padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04) }
+    .chain{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.03); }
+    .chain .pill{ padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); }
+    .bottom-cta{ text-align:center; margin:70px auto 40px } .btn-cta{ background:var(--grad); color:#000; box-shadow:0 6px 18px rgba(111,240,195,.25) }
 
-    /* 🔦 Alt orta spotlight */
-    .spotlight {
-      position: fixed; left: 50%; bottom: -10vh; transform: translateX(-50%);
-      width: 140vw; height: 60vh; pointer-events: none; z-index: 0;
+    /* Arka plan katmanları */
+    .particles{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; mix-blend-mode:screen; }
+    .stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+    .spotlight{ position:fixed; left:50%; bottom:-10vh; transform:translateX(-50%); width:140vw; height:60vh; pointer-events:none; z-index:0;
       background:
         radial-gradient(ellipse at center, rgba(125,248,211,.18), rgba(125,248,211,0) 60%),
         radial-gradient(ellipse at center, rgba(169,140,255,.12), rgba(169,140,255,0) 70%);
-      filter: blur(28px) brightness(1.15);
+      filter:blur(28px) brightness(1.15);
     }
-    .spotlight::before{
-      content:""; position:absolute; left:50%; top:-10%; transform: translateX(-50%) rotate(-7deg);
-      width: 120vw; height: 70vh; opacity:.25;
-      background: conic-gradient(from 200deg at 50% 100%, rgba(125,248,211,.25), rgba(169,140,255,.15), rgba(125,248,211,.25));
-      mask-image: radial-gradient(ellipse at center, black 30%, transparent 70%);
-      filter: blur(40px);
-      animation: beam 6s ease-in-out infinite alternate;
+    .spotlight::before{ content:""; position:absolute; left:50%; top:-10%; transform:translateX(-50%) rotate(-7deg); width:120vw; height:70vh; opacity:.25;
+      background:conic-gradient(from 200deg at 50% 100%, rgba(125,248,211,.25), rgba(169,140,255,.15), rgba(125,248,211,.25));
+      mask-image:radial-gradient(ellipse at center, #000 30%, transparent 70%); filter:blur(40px); animation:beam 6s ease-in-out infinite alternate;
     }
-    @keyframes beam{ from{ opacity:.18; } to{ opacity:.32; } }
+    @keyframes beam{ from{opacity:.18;} to{opacity:.32;} }
+
+    /* Partikül anim */
+    .particle{ position:absolute; display:grid; place-items:center; border-radius:8px; color:#000; font-weight:900; font-family:Inter,system-ui,sans-serif; box-shadow:0 0 16px rgba(125,248,211,.35); opacity:.95; will-change:transform,opacity; animation:fall linear forwards; --dxStart:0px; --dxEnd:0px; }
+    .particle span{ filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)); animation:spin 6s linear infinite; }
+    @keyframes fall{ 0%{ transform:translate3d(var(--dxStart),-60px,0); opacity:.95 } 100%{ transform:translate3d(var(--dxEnd),105vh,0); opacity:0 } }
+    @keyframes spin{ from{ transform:rotate(0) } to{ transform:rotate(360deg) } }
+    .trail{ position:fixed; width:6px; height:6px; border-radius:50%; pointer-events:none; opacity:.55; filter:blur(0); will-change:transform,opacity; animation:trailFade .85s linear forwards; }
+    @keyframes trailFade{ from{ transform:translateY(0); opacity:.55; filter:blur(0);} to{ transform:translateY(12px); opacity:0; filter:blur(3px);} }
 
     /* Navbar */
-    .navbar-wrap { position: sticky; top: 0; z-index: 10; }
-    .navbar { display:flex; align-items:center; justify-content:space-between; padding:10px 18px; margin:12px auto; max-width:1100px; background:rgba(15,20,26,.7); backdrop-filter:blur(10px); border:var(--border); border-radius:var(--radius); position:relative; overflow:hidden; }
-    .navbar::after { content:""; position:absolute; left:-40%; top:0; width:80%; height:2px; background:var(--grad); animation: glowLine 6s linear infinite; }
+    .navbar-wrap{ position:sticky; top:0; z-index:10; }
+    .navbar{ display:flex; align-items:center; justify-content:space-between; padding:10px 18px; margin:12px auto; max-width:1100px;
+      background:rgba(15,20,26,.7); backdrop-filter:blur(10px); border:var(--border); border-radius:var(--radius); position:relative; overflow:hidden; }
+    .navbar::after{ content:""; position:absolute; left:-40%; top:0; width:80%; height:2px; background:var(--grad); animation:glowLine 6s linear infinite; }
     @keyframes glowLine{ 0%{ transform:translateX(-50%) scaleX(.4); opacity:.3 } 50%{ transform:translateX(100%) scaleX(1); opacity:1 } 100%{ transform:translateX(250%) scaleX(.4); opacity:.3 } }
-
     .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text) }
     .logo{ width:34px; height:34px; border-radius:10px; background:var(--grad); display:grid; place-items:center; color:#000; font-weight:800; border:var(--border) }
-
     .nav{ display:flex; align-items:center; gap:14px }
     .nav a{ color:var(--text); text-decoration:none; padding:8px 10px; border-radius:12px; opacity:.9; transition:.2s }
     .nav a:hover{ background:rgba(255,255,255,.05); opacity:1 }
-
     .actions{ display:flex; align-items:center; gap:10px }
     .btn{ border:0; cursor:pointer; padding:10px 14px; border-radius:14px; font-weight:650 }
     .btn-ghost{ background:transparent; color:var(--text); box-shadow:inset 0 0 0 1px rgba(200,209,218,.22) }
@@ -76,17 +79,16 @@
     .sub{ color:#aaa }
 
     /* Hakkında overlay */
-    .about-overlay{ position:fixed; left:0; right:0; top:76px; bottom:0; z-index:9; background:rgba(0,0,0,.35); backdrop-filter: blur(6px); overflow:auto; scrollbar-width:none; }
+    .about-overlay{ position:fixed; left:0; right:0; top:76px; bottom:0; z-index:9; background:rgba(0,0,0,.35); backdrop-filter:blur(6px); overflow:auto; scrollbar-width:none; }
     .about-overlay::-webkit-scrollbar{ display:none }
     .about-inner{ max-width:1000px; margin:0 auto; padding:20px; color:#d8e3ee }
-    .about-inner h2{ margin:0 0 12px }
-    .about-inner h3{ margin:22px 0 8px; font-size:18px }
+    .about-inner h2{ margin:0 0 12px } .about-inner h3{ margin:22px 0 8px; font-size:18px }
     .about-inner ul, .about-inner ol{ margin:0 0 18px; padding-left:18px; line-height:1.7 }
-    /* Başlık arkası çerçeveyi kaldırdık */
     .about-header{ display:flex; align-items:center; justify-content:space-between; position:static; background:transparent !important; backdrop-filter:none !important; padding:0 !important; margin-bottom:12px; }
   </style>
 </head>
 <body>
+  <div class="announcement">🚀 NFT Store çok yakında yayında! Takipte kal 💫</div>
   <div class="particles" id="particles"></div>
   <div class="stars" id="stars" aria-hidden="true"></div>
   <div class="spotlight" aria-hidden="true"></div>
@@ -94,17 +96,14 @@
   <div class="navbar-wrap">
     <nav class="navbar">
       <a class="brand" href="#" data-home>
-        <div class="logo">W</div>
-        <div class="brand-name">Wintra</div>
+        <div class="logo">W</div><div class="brand-name">Wintra</div>
       </a>
-
       <div class="nav" role="navigation">
         <a href="#" class="active" data-home>Ana Sayfa</a>
         <a href="#" data-nft>NFT store</a>
         <a href="#" data-books>Kitaplar</a>
         <a href="#about" id="aboutLink">Hakkında</a>
       </div>
-
       <div class="actions">
         <button class="btn btn-ghost" id="connectBtn">Cüzdanı bağlayın</button>
         <a class="btn btn-ghost" href="#" data-cart>🛒 Sepet</a>
@@ -117,6 +116,11 @@
     <span class="badge">⚡ Canlı • BSC Mainnet</span>
     <h1 class="h1">WTR ile hızlı, güvenli ve basit ödeme.</h1>
     <p class="sub">MetaMask bağla, tutarı gir, onayla. Dijital ürünlerin anında teslim edilsin.</p>
+    <div class="features">
+      <div class="card"><h3>⚡ Anında Ödeme</h3><p>MetaMask ile saniyeler içinde onay; dijital ürün anında teslim.</p></div>
+      <div class="card"><h3>🔒 Güvenli İşlemler</h3><p>BNB Chain üzerinde doğrulanabilir akıllı sözleşmeler.</p></div>
+      <div class="card"><h3>🌐 Sıfır Aracı</h3><p>Üreticiden doğrudan alıcıya — gizli komisyon yok.</p></div>
+    </div>
   </section>
 
   <!-- HAKKINDA OVERLAY -->
@@ -124,95 +128,49 @@
     <div class="about-inner">
       <div class="about-header">
         <h2>Wintra Coin — Hakkında</h2>
-        <!-- Kapat: CTA rengi -->
         <button id="aboutClose" class="btn btn-cta" style="padding:6px 10px;">Kapat</button>
       </div>
 
-      <h3>Amaç</h3>
-      <ul>
-        <li>Dijital ürün ve içerikler için <strong>hızlı, düşük ücretli</strong> ödeme standardı.</li>
-        <li>Üreticilerin <strong>aracı olmadan</strong> gelir elde etmesi.</li>
-        <li>Kullanıcı için <strong>tek tık ödeme</strong> deneyimi.</li>
-      </ul>
+      <section class="section">
+        <h2>Nasıl çalışır?</h2>
+        <div class="steps">
+          <div class="step"><div class="num">1</div><div><b>Cüzdanı bağla</b><br>MetaMask’i aç, BSC Mainnet’e geç.</div></div>
+          <div class="step"><div class="num">2</div><div><b>Ürünü seç</b><br>Kitap ya da NFT — sepete ekle.</div></div>
+          <div class="step"><div class="num">3</div><div><b>WTR/BNB ile öde</b><br>Onayla ve anında teslim al.</div></div>
+        </div>
+      </section>
 
-      <h3>Vizyon</h3>
-      <ul>
-        <li>WTR ile satış yapan <strong>binlerce üretici</strong>, <strong>milyonlarca işlem</strong>.</li>
-        <li><strong>Ödül, indirim, sadakat</strong> kurguları ile sürdürülebilir ekonomi.</li>
-        <li>Açık kaynak <strong>ödeme SDK/Widget</strong> ve kolay entegrasyon.</li>
-      </ul>
+      <section class="section">
+        <h2>Ekosistem</h2>
+        <div class="partners">
+          <div class="partner">🪙 WTR</div><div class="partner">💠 BNB Chain</div><div class="partner">🦊 MetaMask</div><div class="partner">🥞 PancakeSwap</div>
+        </div>
+      </section>
 
-      <h3>Kullanım Alanları</h3>
-      <ul>
-        <li><strong>Kitaplar</strong>: 25–35 sayfa e-kitap, anında teslim.</li>
-        <li><strong>NFT store</strong>: koleksiyon ve ödül sistemleri.</li>
-        <li><strong>Bağış & Üyelik</strong>: topluluğa destek, özel içerik.</li>
-      </ul>
+      <section class="section">
+        <h2>Canlı Zincir Durumu</h2>
+        <div class="chain">
+          <div>
+            <div class="pill">Ağ: <b>BSC Mainnet (56)</b></div>
+            <div class="pill" style="margin-top:8px;">WTR Kontrat: <code>0xf5B1...7dbf</code></div>
+          </div>
+          <a class="btn btn-cta" href="#" data-pay>WTR ile Öde</a>
+        </div>
+      </section>
 
-      <h3>Yol Haritası (Kısa)</h3>
-      <ol>
-        <li><strong>v1</strong> — Wintra Pay canlı (BSC Mainnet, MetaMask).</li>
-        <li><strong>v2</strong> — Sepet, sipariş geçmişi, indirim kodları.</li>
-        <li><strong>v3</strong> — NFT mint modülü, kitap/NFT mağazaları.</li>
-        <li><strong>v4</strong> — Geliştirici widget/SDK ve entegrasyonlar.</li>
-      </ol>
-
-      <h3>Gelecek</h3>
-      <ul>
-        <li>Gerçek kullanım ve <strong>topluluk büyümesi</strong> odaklı sürdürülebilir ekonomi.</li>
-        <li>Üreticilere <strong>gelir paylaşımı</strong> ve teşvikler.</li>
-      </ul>
+      <section class="bottom-cta section">
+        <h2>Topluluğa katıl</h2>
+        <p>Güncellemeleri ilk sen al. NFT Store duyuruları burada.</p>
+        <a class="btn btn-cta" href="#" style="padding:10px 16px; border-radius:14px;">Discord / Telegram</a>
+      </section>
     </div>
   </section>
 
   <script>
-    // Cüzdan (placeholder)
-    const connect = () => alert('Cüzdan bağlama fonksiyonunu buraya ekle');
-    document.getElementById('connectBtn').addEventListener('click', connect);
+    // Basit cüzdan bağla placeholder
+    document.getElementById('connectBtn')?.addEventListener('click', () => alert('Cüzdan bağlama fonksiyonunu buraya ekle'));
 
-    // 🎇 W partikülleri
-    const container = document.getElementById('particles');
-    const maxParticles = 110;
-    function spawnParticle() {
-      if (!container || container.childElementCount >= maxParticles) return;
-      const p = document.createElement('div'); p.className = 'particle';
-      const size = 18 + Math.random() * 16; p.style.width = size + 'px'; p.style.height = size + 'px';
-      const leftPct = Math.random() * 100; p.style.left = leftPct + '%'; p.style.top = (-20 - Math.random() * 100) + 'px';
-      const h = Math.floor(Math.random() * 360);
-      const c1 = `hsl(${h}, 95%, 70%)`; const c2 = `hsl(${(h + 60) % 360}, 95%, 70%)`;
-      p.style.background = `linear-gradient(135deg, ${c1}, ${c2})`; p.style.border = '1px solid rgba(255,255,255,.12)';
-      const dur = 5 + Math.random() * 4; const delay = (Math.random() * 2) - (Math.random() * 1.5);
-      p.style.animationDuration = dur + 's'; p.style.animationDelay = delay + 's';
-      const viewportW = window.innerWidth; const startXpx = viewportW * (leftPct / 100);
-      const targetShift = (viewportW / 2 - startXpx) * 0.18;
-      p.style.setProperty('--dxStart', '0px'); p.style.setProperty('--dxEnd', targetShift.toFixed(1) + 'px');
-      const s = document.createElement('span'); s.textContent = 'W'; p.appendChild(s);
-      container.appendChild(p);
-      const trailEvery = 90 + Math.random() * 120;
-      const trailTimer = setInterval(() => {
-        const rect = p.getBoundingClientRect();
-        if (rect.top > window.innerHeight || rect.bottom < 0) return;
-        const t = document.createElement('div'); t.className = 'trail';
-        t.style.left = rect.left + 'px'; t.style.top = rect.top + 'px'; t.style.background = p.style.background;
-        container.appendChild(t); setTimeout(() => t.remove(), 1000);
-      }, trailEvery);
-      setTimeout(() => { clearInterval(trailTimer); p.remove(); }, (Math.max(dur + Math.max(0, delay), 0) * 1000) + 400);
-    }
-    (function spawnLoop(){ spawnParticle(); setTimeout(spawnLoop, 60 + Math.random() * 200); })();
-
-    // Hakkında overlay
-    (function(){
-      const aboutLink = document.getElementById('aboutLink');
-      const overlay = document.getElementById('aboutOverlay');
-      const closeBtn = document.getElementById('aboutClose');
-      function openAbout(){ overlay.removeAttribute('hidden'); }
-      function closeAbout(){ overlay.setAttribute('hidden',''); }
-      aboutLink?.addEventListener('click', (e)=>{ e.preventDefault(); openAbout(); history.replaceState(null,'','#about'); });
-      closeBtn?.addEventListener('click', ()=>{ closeAbout(); history.replaceState(null,'','#top'); });
-      if(location.hash === '#about') openAbout();
-    })();
-
-    // ⭐ Sabit beyaz yıldızlar
+    // ⭐ Sabit yıldızlar
     (function makeStars(){
       const stars = document.getElementById('stars'); if(!stars) return;
       const total = 240;
@@ -225,32 +183,74 @@
       }
     })();
 
-    // 🔧 BASE PATH FIX — tüm linkleri doğru köke yönlendir
-    (function fixBase(){
-      // GitHub Pages proje kökü: /wintra-pay/
-      let base = '/';
-      const parts = location.pathname.split('/').filter(Boolean);
-      if (location.hostname.endsWith('github.io') && parts.length > 0) {
-        base = '/' + parts[0] + '/';
+    // 🎇 W partikülleri
+    (function(){
+      const container = document.getElementById('particles');
+      const maxParticles = 110;
+      function spawnParticle(){
+        if (!container || container.childElementCount >= maxParticles) return;
+        const p = document.createElement('div'); p.className = 'particle';
+        const size = 18 + Math.random()*16; p.style.width = size+'px'; p.style.height = size+'px';
+        const leftPct = Math.random()*100; p.style.left = leftPct+'%'; p.style.top = (-20 - Math.random()*100)+'px';
+        const h = Math.floor(Math.random()*360);
+        const c1 = `hsl(${h},95%,70%)`, c2 = `hsl(${(h+60)%360},95%,70%)`;
+        p.style.background = `linear-gradient(135deg, ${c1}, ${c2})`;
+        p.style.border = '1px solid rgba(255,255,255,.12)';
+        const dur = 5 + Math.random()*4; const delay = (Math.random()*2) - (Math.random()*1.5);
+        p.style.animationDuration = dur+'s'; p.style.animationDelay = delay+'s';
+        const viewportW = window.innerWidth; const startXpx = viewportW * (leftPct/100);
+        const targetShift = (viewportW/2 - startXpx) * 0.18;
+        p.style.setProperty('--dxStart','0px'); p.style.setProperty('--dxEnd', targetShift.toFixed(1)+'px');
+        const s = document.createElement('span'); s.textContent = 'W'; p.appendChild(s);
+        container.appendChild(p);
+        const trailEvery = 90 + Math.random()*120;
+        const trailTimer = setInterval(()=>{
+          const rect = p.getBoundingClientRect();
+          if(rect.top > window.innerHeight || rect.bottom < 0) return;
+          const t = document.createElement('div'); t.className = 'trail';
+          t.style.left = rect.left+'px'; t.style.top = rect.top+'px'; t.style.background = p.style.background;
+          container.appendChild(t); setTimeout(()=>t.remove(), 1000);
+        }, trailEvery);
+        setTimeout(()=>{ clearInterval(trailTimer); p.remove(); }, (Math.max(dur + Math.max(0,delay),0)*1000)+400);
       }
-      // Ana sayfa
-      document.querySelectorAll('[data-home]')
-        .forEach(a => a.setAttribute('href', base + 'index.html'));
-      // Sepet
-      document.querySelectorAll('[data-cart]')
-        .forEach(a => a.setAttribute('href', base + 'cart/'));
-      // Ödeme
-      document.querySelectorAll('[data-pay]')
-        .forEach(a => a.setAttribute('href', base + 'pay/'));
-      // NFT (tekil!)
-      document.querySelectorAll('[data-nft]')
-        .forEach(a => a.setAttribute('href', base + 'nft/'));
-      // Kitaplar (sonra eklersin)
-      document.querySelectorAll('[data-books]')
-        .forEach(a => a.setAttribute('href', base + 'books/'));
+      (function loop(){ spawnParticle(); setTimeout(loop, 60 + Math.random()*200); })();
     })();
 
-</script>
+    // Hakkında overlay
+    (function(){
+      const aboutLink = document.getElementById('aboutLink');
+      const overlay = document.getElementById('aboutOverlay');
+      const closeBtn = document.getElementById('aboutClose');
+      function openAbout(){ overlay?.removeAttribute('hidden'); }
+      function closeAbout(){ overlay?.setAttribute('hidden',''); }
+      aboutLink?.addEventListener('click', (e)=>{ e.preventDefault(); openAbout(); history.replaceState(null,'','#about'); });
+      closeBtn?.addEventListener('click', ()=>{ closeAbout(); history.replaceState(null,'','#top'); });
+      if (location.hash === '#about') openAbout();
+    })();
 
+    // 🔧 BASE PATH FIX — güvenli
+    (function fixBase(){
+      try{
+        let base = '/';
+        const parts = location.pathname.split('/').filter(Boolean);
+        // GitHub Pages proje kökü: username.github.io/REPO/*
+        if (location.hostname.endsWith('github.io') && parts.length > 0) {
+          base = '/' + parts[0] + '/';
+        }
+        // Ana sayfa
+        document.querySelectorAll('[data-home]').forEach(a => a.setAttribute('href', base + 'index.html'));
+        // Sepet
+        document.querySelectorAll('[data-cart]').forEach(a => a.setAttribute('href', base + 'cart/'));
+        // Ödeme
+        document.querySelectorAll('[data-pay]').forEach(a => a.setAttribute('href', base + 'pay/'));
+        // NFT
+        document.querySelectorAll('[data-nft]').forEach(a => a.setAttribute('href', base + 'nft/'));
+        // Kitaplar
+        document.querySelectorAll('[data-books]').forEach(a => a.setAttribute('href', base + 'books/'));
+      }catch(e){
+        console.warn('fixBase hata:', e);
+      }
+    })();
+  </script>
 </body>
 </html>
