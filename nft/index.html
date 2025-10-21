@@ -101,11 +101,15 @@
   <script>
     // ---- Yapılandırma ----
     const DEMO_MODU = true; // false yapınca mint/ödeme bağlanacak
+    // DİKKAT: Artık "image" alanı UZANTISIZ baz ad. (uzantıyı loader ekleyecek)
     const NFTS = [
-      { id:0, name:"Data Askeri", class:"Legendary", priceWTR:10000, supply:20, minted:0, image:"../assets/nft/data-askeri.webp" },
-      { id:1, name:"Gölge",       class:"Rare",      priceWTR:2000,  supply:50, minted:0, image:"../assets/nft/golge.webp" },
-      { id:2, name:"CyberCity",   class:"Legendary", priceWTR:25000, supply:10, minted:0, image:"../assets/nft/cybercity.webp" }
+      { id:0, name:"Data Askeri", class:"Legendary", priceWTR:10000, supply:20, minted:0, image:"../assets/nft/data-askeri" },
+      { id:1, name:"Gölge",       class:"Rare",      priceWTR:2000,  supply:50, minted:0, image:"../assets/nft/golge" },
+      { id:2, name:"CyberCity",   class:"Legendary", priceWTR:25000, supply:10, minted:0, image:"../assets/nft/cybercity" }
     ];
+
+    // Uzantıları sırayla dene
+    const CANDIDATE_EXTS = [".webp",".jpg",".jpeg",".png"];
 
     // ---- UI oluştur ----
     const grid = document.getElementById("grid");
@@ -119,7 +123,7 @@
       el.className = "card";
       el.innerHTML = `
         <div class="thumb ${rarityOutline}">
-          <img src="${n.image}" alt="${n.name}" />
+          <img data-base="${n.image}" alt="${n.name}" />
           <div class="chip ${n.class}">${n.class}</div>
         </div>
         <div class="info">
@@ -136,17 +140,22 @@
       `;
       grid.appendChild(el);
 
-      // --- IMG fallback: .webp olmazsa .jpg dene; o da yoksa SVG üret ---
+      // --- Akıllı yükleyici: .webp → .jpg → .jpeg → .png → SVG ---
       el.querySelectorAll('img').forEach(img => {
-        img.onerror = function () {
-          if (!this.dataset.triedJpg && /\.webp(\?|$)/i.test(this.src)) {
-            this.dataset.triedJpg = "1";
-            this.src = this.src.replace(/\.webp(\?|$)/i, '.jpg$1');
-            return;
+        const base = img.getAttribute('data-base');
+        let idx = 0;
+
+        function tryNext() {
+          if (idx < CANDIDATE_EXTS.length) {
+            img.src = base + CANDIDATE_EXTS[idx++];
+          } else {
+            img.onerror = null;
+            img.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
           }
-          this.onerror = null;
-          this.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
-        };
+        }
+
+        img.onerror = tryNext;
+        tryNext(); // ilk deneme başlasın
       });
     }
 
