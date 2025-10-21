@@ -226,7 +226,8 @@
     })();
 
     // 🔧 BASE PATH FIX — tüm linkleri doğru köke yönlendir
-    (function fixBase(){
+<script>
+  (function fixBase(){
     // GitHub Pages proje kökü: /wintra-pay/
     let base = '/';
     const parts = location.pathname.split('/').filter(Boolean);
@@ -250,5 +251,6 @@
       .forEach(a => a.setAttribute('href', base + 'books/'));
   })();
 </script>
+
 </body>
 </html>
