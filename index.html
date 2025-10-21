@@ -100,7 +100,7 @@
 
       <div class="nav" role="navigation">
         <a href="#" class="active" data-home>Ana Sayfa</a>
-        <a href="#" data-nfts>NFT store</a>
+        <a href="#" data-nft>NFT store</a>
         <a href="#" data-books>Kitaplar</a>
         <a href="#about" id="aboutLink">Hakkında</a>
       </div>
@@ -145,7 +145,7 @@
       <h3>Kullanım Alanları</h3>
       <ul>
         <li><strong>Kitaplar</strong>: 25–35 sayfa e-kitap, anında teslim.</li>
-        <li><strong>NFT’ler</strong>: koleksiyon ve ödül sistemleri.</li>
+        <li><strong>NFT store</strong>: koleksiyon ve ödül sistemleri.</li>
         <li><strong>Bağış & Üyelik</strong>: topluluğa destek, özel içerik.</li>
       </ul>
 
@@ -244,7 +244,7 @@
     document.querySelectorAll('[data-pay]')
       .forEach(a => a.setAttribute('href', base + 'pay/'));
     // **DÜZELTME: nft (tekil)**
-    document.querySelectorAll('[data-nfts]')
+    document.querySelectorAll('[data-nft]')
       .forEach(a => a.setAttribute('href', base + 'nft/'));
     // Kitaplar (sayfan yoksa şimdilik ana sayfaya götürsün)
     document.querySelectorAll('[data-books]')
