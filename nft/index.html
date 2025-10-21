@@ -4,82 +4,211 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Wintra — NFT Store</title>
-  <meta name="description" content="Wintra NFT Koleksiyonu yakında yayında." />
+  <meta name="description" content="Wintra NFT Koleksiyonu" />
   <link rel="icon" href="../assets/wtr.png" />
   <style>
     :root{
-      --mut:#a8cbbd;
+      --bg:#0a1320; --card:#0f1d30; --mut:#a8cbbd;
+      --gold:#ffd700; --purple:#b500ff; --chip:#1b2a42;
+      --grad: linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);
     }
-
-    /* Ana sayfadaki CTA ile aynı görünüm */
-    .btn-cta{
-      background: linear-gradient(90deg, #7df8d3, #a98cff, #dce6f0);
-      color:#000;
-      font-weight:700;
-      border:none;
-      box-shadow:0 6px 18px rgba(111,240,195,.25);
-      transition:.25s;
-      display:inline-block;
-      text-decoration:none;
-      padding:12px 18px;
-      border-radius:14px;
-    }
-    .btn-cta:hover{ opacity:.9; transform:translateY(-1px); }
-
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin:0; font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
       background: radial-gradient(1200px 800px at 30% 20%, #0e1a2d 0%, #0a1320 55%, #08101c 100%);
-      color:#e6f5ff; display:flex; align-items:center; justify-content:center; padding:24px;
+      color:#e6f5ff;
     }
-    .wrap{
-      width:min(960px,100%); text-align:center; padding:32px;
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; padding:16px 20px; max-width:1120px; margin:0 auto;
+    }
+    .back{ display:inline-block; text-decoration:none; padding:10px 14px; border-radius:14px;
+      background:var(--grad); color:#000; font-weight:700; box-shadow:0 6px 18px rgba(111,240,195,.25);
+    }
+    h1{font-size: clamp(26px,4.6vw,40px); margin:0}
+    .sub{color:var(--mut); margin:6px 0 0}
+
+    .grid{
+      max-width:1120px; margin:16px auto 40px; padding:0 20px;
+      display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:18px;
+    }
+    .card{
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.08); border-radius:20px; backdrop-filter: blur(6px);
-      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.08); border-radius:18px; overflow:hidden;
+      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      display:flex; flex-direction:column;
     }
-    h1{font-size: clamp(28px, 6vw, 44px); margin:0 0 12px}
-    p{margin:8px 0; color:var(--mut)}
-    .badge{
-      display:inline-block; padding:6px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06);
-      font-size:12px; letter-spacing:.4px; text-transform: uppercase;
+    .thumb{
+      aspect-ratio:1/1; background:#0c1a2b; display:grid; place-items:center; position:relative;
     }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block }
+    .legendary{ outline:2px solid var(--gold) }
+    .rare{ outline:2px solid var(--purple) }
+
+    .chip{
+      position:absolute; left:10px; top:10px; padding:6px 10px; border-radius:999px;
+      background:var(--chip); border:1px solid rgba(255,255,255,.18); font-size:12px
+    }
+    /* 🔥 Parlak mor & ışıltılı altın rozetler */
+    .chip.Rare{
+      background:linear-gradient(90deg,#b500ff,#e37fff);
+      color:#fff;
+      text-shadow:0 0 6px #e37fff, 0 0 10px #b500ff;
+      border:1px solid rgba(255,255,255,.25);
+      box-shadow:0 0 10px rgba(181,0,255,.5);
+    }
+    .chip.Legendary{
+      background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700);
+      color:#000;
+      text-shadow:0 0 6px #fff6c5,0 0 10px #ffd700;
+      border:1px solid rgba(255,255,255,.25);
+      box-shadow:0 0 10px rgba(255,215,0,.5);
+    }
+
+    .info{ padding:14px; display:grid; gap:8px }
+    .title{ font-weight:800; font-size:18px }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; color:#cfe7ff }
+    .price{ font-weight:800 }
+    .left{ color:#a8cbbd; font-size:14px }
+    .actions{ display:flex; gap:8px; padding:14px; padding-top:0 }
+    .btn{
+      flex:1; border:0; cursor:pointer; padding:10px 12px; border-radius:12px; font-weight:700;
+      background:#14263b; color:#d7f6ff; border:1px solid rgba(147,231,255,.35)
+    }
+    .btn-primary{ background:var(--grad); color:#000; border:0; box-shadow:0 6px 16px rgba(111,240,195,.25) }
+    .note{ max-width:1120px; margin:6px auto 20px; padding:0 20px; color:#a8cbbd; font-size:14px }
+    .badge{ margin-left:8px; font-size:12px; opacity:.85 }
     .stars{position:fixed; inset:0; pointer-events:none; z-index:-1}
-    .stars canvas{width:100%; height:100%; display:block; opacity:.4}
+    .stars canvas{width:100%; height:100%; display:block; opacity:.35}
   </style>
 </head>
 <body>
   <div class="stars"><canvas id="space"></canvas></div>
-  <main class="wrap">
-    <div class="badge">NFT Store</div>
-    <h1>Çok yakında hizmetinizdeyiz</h1>
-    <p>Wintra NFT koleksiyonu burada listelenecek. Satın alımlar WTR/BNB ile, cüzdan entegrasyonu ile yapılacaktır.</p>
-    <p>Duyuruları kaçırmamak için ana sayfayı takipte kal.</p>
-    <a class="btn-cta" href="../">← Ana sayfa</a>
-  </main>
+
+  <header>
+    <div>
+      <h1>NFT Store <span class="badge">v1</span></h1>
+      <p class="sub">Wintra’nın ilk koleksiyonu: Data Askeri, Gölge ve CyberCity.</p>
+    </div>
+    <a class="back" href="../">← Ana sayfa</a>
+  </header>
+
+  <p class="note">Not: DEMO modunda butonlar ödeme sayfasına yönlendirir. Gerçeğe geçtiğimizde mint/ödeme entegrasyonunu bağlayacağız.</p>
+
+  <section class="grid" id="grid"></section>
 
   <script>
-    // Yıldız alanı (hafif)
-    const c = document.getElementById('space'), x = c.getContext('2d');
-    let w, h, stars = [];
-    function size(){ w = c.width = innerWidth; h = c.height = innerHeight }
-    function init(n=120){
-      stars = Array.from({length:n}, ()=>({x: Math.random()*w, y: Math.random()*h, z: Math.random()*1+0.2}));
-      x.fillStyle = "#ffffff";
-    }
-    function draw(){
-      x.clearRect(0,0,w,h);
-      for(const s of stars){
-        x.globalAlpha = s.z;
-        x.fillRect(s.x, s.y, 2, 2);
-        s.x += .1 * s.z; if (s.x > w){ s.x = 0; s.y = Math.random()*h; }
+    // ---- Yapılandırma ----
+    const DEMO_MODU = true; // false yapınca mint/ödeme bağlanacak
+    const NFTS = [
+      {
+        id: 0,
+        name: "Data Askeri",
+        class: "Legendary",
+        priceWTR: 10000,
+        supply: 20,
+        minted: 0,
+        image: "../assets/nft/data-askeri.webp"
+      },
+      {
+        id: 1,
+        name: "Gölge",
+        class: "Rare",
+        priceWTR: 2000,
+        supply: 50,
+        minted: 0,
+        image: "../assets/nft/golge.webp"
+      },
+      {
+        id: 2,
+        name: "CyberCity",
+        class: "Legendary",
+        priceWTR: 25000,
+        supply: 10,
+        minted: 0,
+        image: "../assets/nft/cybercity.webp"
       }
-      requestAnimationFrame(draw);
+    ];
+
+    // ---- UI oluştur ----
+    const grid = document.getElementById("grid");
+    for (const n of NFTS) {
+      const left = Math.max(n.supply - n.minted, 0);
+      const rarityOutline = n.class.toLowerCase() === "legendary" ? "legendary" :
+                            (n.class.toLowerCase()==="rare" ? "rare" : "");
+      const el = document.createElement("article");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="thumb ${rarityOutline}">
+          <img src="${n.image}" alt="${n.name}"
+               onerror="this.onerror=null;this.src='data:image/svg+xml,${encodeURIComponent(fallbackSVG(n.name))}';" />
+          <!-- 🔗 Burada otomatik sınıf: .chip.Legendary veya .chip.Rare -->
+          <div class="chip ${n.class}">${n.class}</div>
+        </div>
+        <div class="info">
+          <div class="title">${n.name}</div>
+          <div class="row">
+            <div class="price">💠 ${n.priceWTR.toLocaleString('tr-TR')} WTR</div>
+            <div class="left">Kalan: ${left}/${n.supply}</div>
+          </div>
+        </div>
+        <div class="actions">
+          <button class="btn" data-details="${n.id}">Detay</button>
+          <button class="btn btn-primary" data-buy="${n.id}">WTR ile Satın Al</button>
+        </div>
+      `;
+      grid.appendChild(el);
     }
-    size(); init(); draw();
-    addEventListener('resize', ()=>{ size(); init(stars.length); });
+
+    // ---- Butonlar ----
+    grid.addEventListener("click", (e)=>{
+      const buyId = e.target.closest("[data-buy]")?.getAttribute("data-buy");
+      const detId = e.target.closest("[data-details]")?.getAttribute("data-details");
+      if (detId !== null && detId !== undefined) {
+        const n = NFTS.find(x=> String(x.id) === String(detId));
+        alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`);
+      }
+      if (buyId !== null && buyId !== undefined) {
+        const n = NFTS.find(x=> String(x.id) === String(buyId));
+        if (DEMO_MODU) {
+          location.href = `../pay/index.html?nft=${n.id}&qty=1&demo=1`;
+        } else {
+          // Gerçek akış (approve + mint veya payable mint) buraya bağlanacak.
+          alert("Gerçek mint akışı yakında bağlanacak.");
+        }
+      }
+    });
+
+    // ---- Fallback görsel (SVG) ----
+    function fallbackSVG(title){
+      return `
+        <svg xmlns='http://www.w3.org/2000/svg' width='1024' height='1024'>
+          <defs>
+            <linearGradient id='g' x1='0' x2='1'>
+              <stop offset='0' stop-color='#0e1a2d'/><stop offset='1' stop-color='#091321'/>
+            </linearGradient>
+          </defs>
+          <rect width='100%' height='100%' fill='url(#g)'/>
+          <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
+            fill='#9fd4ff' font-size='54' font-family='system-ui' opacity='.9'>${title}</text>
+        </svg>
+      `;
+    }
+
+    // ---- Yıldız alanı ----
+    (function stars(){
+      const c=document.getElementById('space'),x=c.getContext('2d');
+      function size(){ c.width=innerWidth; c.height=innerHeight }
+      let stars=[];
+      function init(n=120){ stars = Array.from({length:n}, ()=>({x:Math.random()*c.width, y:Math.random()*c.height, z:Math.random()*1+.2})); }
+      function draw(){
+        x.clearRect(0,0,c.width,c.height);
+        for(const s of stars){ x.globalAlpha=s.z; x.fillStyle="#fff"; x.fillRect(s.x,s.y,2,2); s.x+=.1*s.z; if(s.x>c.width){ s.x=0; s.y=Math.random()*c.height; } }
+        requestAnimationFrame(draw);
+      }
+      size(); init(); draw(); addEventListener('resize',()=>{ size(); init(stars.length); });
+    })();
   </script>
 </body>
 </html>
