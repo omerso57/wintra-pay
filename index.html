@@ -227,23 +227,28 @@
 
     // 🔧 BASE PATH FIX — tüm linkleri doğru köke yönlendir
     (function fixBase(){
-      // GitHub Pages (kullanıcı sayfası değil de proje sayfasıysa) için kök
-      let base = '/';
-      const parts = location.pathname.split('/').filter(Boolean); // ["repo","pay","index.html"] gibi
-      if (location.hostname.endsWith('github.io') && parts.length > 0) {
-        // username.github.io/<repo>/...
-        base = '/' + parts[0] + '/';
-      }
-      // Ana sayfa
-      document.querySelectorAll('[data-home]').forEach(a => a.setAttribute('href', base + 'index.html'));
-      // Sepet
-      document.querySelectorAll('[data-cart]').forEach(a => a.setAttribute('href', base + 'cart/'));
-      // Ödeme
-      document.querySelectorAll('[data-pay]').forEach(a => a.setAttribute('href', base + 'pay/'));
-      // NFT / Books (varsa alt sayfalar)
-      document.querySelectorAll('[data-nfts]').forEach(a => a.setAttribute('href', base + 'nfts/'));
-      document.querySelectorAll('[data-books]').forEach(a => a.setAttribute('href', base + 'books/'));
-    })();
-  </script>
+    // GitHub Pages proje kökü: /wintra-pay/
+    let base = '/';
+    const parts = location.pathname.split('/').filter(Boolean);
+    if (location.hostname.endsWith('github.io') && parts.length > 0) {
+      base = '/' + parts[0] + '/';
+    }
+    // Ana sayfa
+    document.querySelectorAll('[data-home]')
+      .forEach(a => a.setAttribute('href', base + 'index.html'));
+    // Sepet (şimdilik yoksa base bırakabilirsin)
+    document.querySelectorAll('[data-cart]')
+      .forEach(a => a.setAttribute('href', base + 'cart/'));
+    // Ödeme
+    document.querySelectorAll('[data-pay]')
+      .forEach(a => a.setAttribute('href', base + 'pay/'));
+    // **DÜZELTME: nft (tekil)**
+    document.querySelectorAll('[data-nfts]')
+      .forEach(a => a.setAttribute('href', base + 'nft/'));
+    // Kitaplar (sayfan yoksa şimdilik ana sayfaya götürsün)
+    document.querySelectorAll('[data-books]')
+      .forEach(a => a.setAttribute('href', base + 'books/'));
+  })();
+</script>
 </body>
 </html>
