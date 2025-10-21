@@ -102,48 +102,24 @@
     // ---- Yapılandırma ----
     const DEMO_MODU = true; // false yapınca mint/ödeme bağlanacak
     const NFTS = [
-      {
-        id: 0,
-        name: "Data Askeri",
-        class: "Legendary",
-        priceWTR: 10000,
-        supply: 20,
-        minted: 0,
-        image: "../assets/nft/data-askeri.webp"
-      },
-      {
-        id: 1,
-        name: "Gölge",
-        class: "Rare",
-        priceWTR: 2000,
-        supply: 50,
-        minted: 0,
-        image: "../assets/nft/golge.webp"
-      },
-      {
-        id: 2,
-        name: "CyberCity",
-        class: "Legendary",
-        priceWTR: 25000,
-        supply: 10,
-        minted: 0,
-        image: "../assets/nft/cybercity.webp"
-      }
+      { id:0, name:"Data Askeri", class:"Legendary", priceWTR:10000, supply:20, minted:0, image:"../assets/nft/data-askeri.webp" },
+      { id:1, name:"Gölge",       class:"Rare",      priceWTR:2000,  supply:50, minted:0, image:"../assets/nft/golge.webp" },
+      { id:2, name:"CyberCity",   class:"Legendary", priceWTR:25000, supply:10, minted:0, image:"../assets/nft/cybercity.webp" }
     ];
 
     // ---- UI oluştur ----
     const grid = document.getElementById("grid");
     for (const n of NFTS) {
       const left = Math.max(n.supply - n.minted, 0);
-      const rarityOutline = n.class.toLowerCase() === "legendary" ? "legendary" :
-                            (n.class.toLowerCase()==="rare" ? "rare" : "");
+      const rarityOutline =
+        n.class.toLowerCase()==="legendary" ? "legendary" :
+        n.class.toLowerCase()==="rare"      ? "rare"      : "";
+
       const el = document.createElement("article");
       el.className = "card";
       el.innerHTML = `
         <div class="thumb ${rarityOutline}">
-          <img src="${n.image}" alt="${n.name}"
-               onerror="this.onerror=null;this.src='data:image/svg+xml,${encodeURIComponent(fallbackSVG(n.name))}';" />
-          <!-- 🔗 Burada otomatik sınıf: .chip.Legendary veya .chip.Rare -->
+          <img src="${n.image}" alt="${n.name}" />
           <div class="chip ${n.class}">${n.class}</div>
         </div>
         <div class="info">
@@ -159,38 +135,36 @@
         </div>
       `;
       grid.appendChild(el);
-// --- IMG fallback: .webp yüklenmezse .jpg dene, o da olmazsa SVG ---
-const imgs = el.querySelectorAll('img');
-imgs.forEach(img => {
-  img.onerror = function () {
-    // webp denemişsek jpg'e dön
-    if (!this.dataset.triedJpg && /\.webp(\?|$)/i.test(this.src)) {
-      this.dataset.triedJpg = "1";
-      this.src = this.src.replace(/\.webp(\?|$)/i, '.jpg$1');
-      return;
-    }
-    // jpg de olmadı → SVG fallback
-    this.onerror = null;
-    this.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
-  };
-});
 
+      // --- IMG fallback: .webp olmazsa .jpg dene; o da yoksa SVG üret ---
+      el.querySelectorAll('img').forEach(img => {
+        img.onerror = function () {
+          if (!this.dataset.triedJpg && /\.webp(\?|$)/i.test(this.src)) {
+            this.dataset.triedJpg = "1";
+            this.src = this.src.replace(/\.webp(\?|$)/i, '.jpg$1');
+            return;
+          }
+          this.onerror = null;
+          this.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
+        };
+      });
     }
 
     // ---- Butonlar ----
     grid.addEventListener("click", (e)=>{
       const buyId = e.target.closest("[data-buy]")?.getAttribute("data-buy");
       const detId = e.target.closest("[data-details]")?.getAttribute("data-details");
+
       if (detId !== null && detId !== undefined) {
         const n = NFTS.find(x=> String(x.id) === String(detId));
         alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`);
       }
+
       if (buyId !== null && buyId !== undefined) {
         const n = NFTS.find(x=> String(x.id) === String(buyId));
         if (DEMO_MODU) {
           location.href = `../pay/index.html?nft=${n.id}&qty=1&demo=1`;
         } else {
-          // Gerçek akış (approve + mint veya payable mint) buraya bağlanacak.
           alert("Gerçek mint akışı yakında bağlanacak.");
         }
       }
@@ -200,11 +174,9 @@ imgs.forEach(img => {
     function fallbackSVG(title){
       return `
         <svg xmlns='http://www.w3.org/2000/svg' width='1024' height='1024'>
-          <defs>
-            <linearGradient id='g' x1='0' x2='1'>
-              <stop offset='0' stop-color='#0e1a2d'/><stop offset='1' stop-color='#091321'/>
-            </linearGradient>
-          </defs>
+          <defs><linearGradient id='g' x1='0' x2='1'>
+            <stop offset='0' stop-color='#0e1a2d'/><stop offset='1' stop-color='#091321'/>
+          </linearGradient></defs>
           <rect width='100%' height='100%' fill='url(#g)'/>
           <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
             fill='#9fd4ff' font-size='54' font-family='system-ui' opacity='.9'>${title}</text>
