@@ -3,21 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wintra — NFT store</title>
+  <title>Wintra — NFT Store</title>
   <meta name="description" content="Wintra NFT Koleksiyonu yakında yayında." />
   <link rel="icon" href="../assets/wtr.png" />
-  <style> .btn-cta{
-  background: linear-gradient(90deg, #7df8d3, #a98cff, #dce6f0);
-  color:#000;
-  font-weight:700;
-  border:none;
-  box-shadow:0 6px 18px rgba(111,240,195,.25);
-  transition:.25s;
-}
-.btn-cta:hover{
-  opacity:.9;
-  transform:translateY(-1px);
-}
+  <style>
+    :root{
+      --mut:#a8cbbd;
+    }
+
+    /* Ana sayfadaki CTA ile aynı görünüm */
+    .btn-cta{
+      background: linear-gradient(90deg, #7df8d3, #a98cff, #dce6f0);
+      color:#000;
+      font-weight:700;
+      border:none;
+      box-shadow:0 6px 18px rgba(111,240,195,.25);
+      transition:.25s;
+      display:inline-block;
+      text-decoration:none;
+      padding:12px 18px;
+      border-radius:14px;
+    }
+    .btn-cta:hover{ opacity:.9; transform:translateY(-1px); }
 
     *{box-sizing:border-box}
     html,body{height:100%}
@@ -39,10 +46,6 @@
       border:1px solid rgba(255,255,255,.18); background: rgba(255,255,255,.06);
       font-size:12px; letter-spacing:.4px; text-transform: uppercase;
     }
-    .cta{
-      margin-top:20px; display:inline-block; padding:12px 18px; border-radius:12px;
-      background:#14263b; border:1px solid rgba(147,231,255,.35); color:#d7f6ff; text-decoration:none;
-    }
     .stars{position:fixed; inset:0; pointer-events:none; z-index:-1}
     .stars canvas{width:100%; height:100%; display:block; opacity:.4}
   </style>
@@ -50,30 +53,33 @@
 <body>
   <div class="stars"><canvas id="space"></canvas></div>
   <main class="wrap">
-    <div class="badge">NFT store</div>
+    <div class="badge">NFT Store</div>
     <h1>Çok yakında hizmetinizdeyiz</h1>
     <p>Wintra NFT koleksiyonu burada listelenecek. Satın alımlar WTR/BNB ile, cüzdan entegrasyonu ile yapılacaktır.</p>
     <p>Duyuruları kaçırmamak için ana sayfayı takipte kal.</p>
-    <a class="btn-cta" href="../" style="display:inline-block; text-decoration:none; padding:12px 18px; border-radius:14px;">
-  ← Ana sayfa
-</a>
-
+    <a class="btn-cta" href="../">← Ana sayfa</a>
   </main>
 
   <script>
-    // minik yıldız alanı (hafif)
-    const c=document.getElementById('space'),x=c.getContext('2d');
-    let w,h,stars=[]; function size(){w=c.width=window.innerWidth;h=c.height=window.innerHeight}
-    function init(n=120){stars=[...Array(n)].map(()=>({x:Math.random()*w,y:Math.random()*h,z:Math.random()*1+0.2}))}
+    // Yıldız alanı (hafif)
+    const c = document.getElementById('space'), x = c.getContext('2d');
+    let w, h, stars = [];
+    function size(){ w = c.width = innerWidth; h = c.height = innerHeight }
+    function init(n=120){
+      stars = Array.from({length:n}, ()=>({x: Math.random()*w, y: Math.random()*h, z: Math.random()*1+0.2}));
+      x.fillStyle = "#ffffff";
+    }
     function draw(){
       x.clearRect(0,0,w,h);
       for(const s of stars){
-        x.globalAlpha=s.z; x.fillRect(s.x,s.y,2,2);
-        s.x+=.1*s.z; if(s.x>w){s.x=0; s.y=Math.random()*h}
+        x.globalAlpha = s.z;
+        x.fillRect(s.x, s.y, 2, 2);
+        s.x += .1 * s.z; if (s.x > w){ s.x = 0; s.y = Math.random()*h; }
       }
       requestAnimationFrame(draw);
     }
-    size(); init(); draw(); addEventListener('resize',()=>{size(); init(stars.length)});
+    size(); init(); draw();
+    addEventListener('resize', ()=>{ size(); init(stars.length); });
   </script>
 </body>
 </html>
