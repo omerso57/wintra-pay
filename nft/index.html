@@ -159,6 +159,22 @@
         </div>
       `;
       grid.appendChild(el);
+      // --- IMG fallback: .webp yüklenmezse .jpg dene, o da olmazsa SVG ---
+const imgs = el.querySelectorAll('img');
+imgs.forEach(img => {
+  img.onerror = function () {
+    // webp denemişsek jpg'e dön
+    if (!this.dataset.triedJpg && /\.webp(\?|$)/i.test(this.src)) {
+      this.dataset.triedJpg = "1";
+      this.src = this.src.replace(/\.webp(\?|$)/i, '.jpg$1');
+      return;
+    }
+    // jpg de olmadı → SVG fallback
+    this.onerror = null;
+    this.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
+  };
+};
+
     }
 
     // ---- Butonlar ----
