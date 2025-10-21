@@ -159,7 +159,7 @@
         </div>
       `;
       grid.appendChild(el);
-      // --- IMG fallback: .webp yüklenmezse .jpg dene, o da olmazsa SVG ---
+// --- IMG fallback: .webp yüklenmezse .jpg dene, o da olmazsa SVG ---
 const imgs = el.querySelectorAll('img');
 imgs.forEach(img => {
   img.onerror = function () {
@@ -173,7 +173,7 @@ imgs.forEach(img => {
     this.onerror = null;
     this.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
   };
-};
+});
 
     }
 
