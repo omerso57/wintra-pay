@@ -1,0 +1,525 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Wintra · Kitaplar</title>
+<style>
+:root{
+  --accent1:#78f7ff; --accent2:#d8b6ff; --glow:#bff0ff;
+  --bg:#000; --text:#eafaff; --muted:#9fb4c0;
+  --card:#0b0b0b; --line:#131313; --discount:#2ee08b; --silver:#e6edf5;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--text);
+  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+  overflow-x:hidden;}
+#stars{position:fixed;inset:0;z-index:0;background:#000}
+
+/* header */
+header{position:sticky;top:0;z-index:3;background:rgba(0,0,0,.55);backdrop-filter:blur(10px)}
+.top{max-width:1280px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:220px 1fr auto;gap:12px;align-items:center}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800}
+.brand .dot{width:11px;height:11px;border-radius:50%;
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  box-shadow:0 0 16px var(--glow)}
+.badge{padding:6px 10px;border-radius:999px;background:#061015;color:#bff8ff;border:1px solid #09303a;font-weight:800}
+.search{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid #0e0e0e;border-radius:12px;padding:8px 10px}
+.search input{all:unset;width:100%}
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+select{background:var(--card);color:var(--text);border:1px solid #0e0e0e;border-radius:10px;padding:9px 10px;font-weight:700}
+
+/* chips */
+.cat-chips{position:relative;z-index:1;max-width:1280px;margin:10px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:6px 12px 0}
+.chip{border:1px solid #0e0e0e;background:#0a0a0a;color:#cde5ee;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700}
+
+/* içerik */
+main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12px}
+.row{margin:12px 0 26px}
+.row-head{display:flex;align-items:center;justify-content:space-between;margin:0 6px 8px}
+.row-title{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900}
+.row-title .bar{width:6px;height:20px;border-radius:4px;background:linear-gradient(180deg,var(--accent1),var(--accent2));box-shadow:0 0 12px var(--glow)}
+.seeall{color:var(--muted);text-decoration:none;font-weight:800}
+
+/* scroller & kartlar */
+.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:180px;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 4px 6px}
+.scroller::-webkit-scrollbar{height:8px}
+.scroller::-webkit-scrollbar-thumb{background:#141414;border-radius:8px}
+.card{background:var(--card);border:1px solid #101010;border-radius:14px;overflow:hidden;scroll-snap-align:start;transition:transform .18s, box-shadow .18s}
+.card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.45)}
+.cover{width:100%;aspect-ratio:3/4;background:#111 center/cover no-repeat}
+.meta{padding:9px}
+
+.ttl{font-weight:900;font-size:14px;line-height:1.2}
+.auth{font-size:12px;color:var(--muted);margin-top:4px}
+.price{display:flex;align-items:center;gap:8px;margin-top:8px}
+.price .num{font-weight:900;font-size:13px}
+.price .discount{color:var(--discount);font-weight:900;font-size:12px}
+.rowbtns{display:flex;gap:6px;margin-top:8px}
+.btn{
+  flex:1;border-radius:11px;border:1px solid rgba(255,255,255,.12);
+  background:linear-gradient(90deg,var(--accent1),var(--accent2));
+  box-shadow:0 0 0 1px rgba(255,255,255,.12) inset, 0 8px 22px rgba(150,210,255,.25);
+  color:#001b2a;font-weight:900;padding:8px 10px;cursor:pointer;text-align:center;font-size:12px}
+.btn.sec{border:1px solid rgba(255,255,255,.18);background:#101018;color:var(--silver)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.pill{display:none}
+
+/* Progress bar (sadece sahip olunanlarda) */
+.prog{height:6px;background:#0f1420;border:1px solid #1a2335;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+.prog>.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(150,210,255,.35)}
+
+/* sepet butonu & panel */
+.cartFabWrap{position:fixed;right:16px;bottom:16px;z-index:4}
+.cartFab{padding:12px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.35);color:#002e2e;font-weight:900;border:none;cursor:pointer}
+.bubble{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#1f2a44;color:#cfe8ff;border:1px solid #2a3a66;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:900}
+
+.drawer{position:fixed;top:0;right:-420px;height:100%;width:420px;max-width:100vw;background:#050505;border-left:1px solid #0f0f0f;z-index:5;transition:right .25s ease;display:flex;flex-direction:column}
+.drawer.open{right:0}
+.dHead{padding:14px 16px;border-bottom:1px solid #0f0f0f;display:flex;justify-content:space-between;align-items:center}
+.dBody{flex:1;overflow:auto;padding:12px}
+.item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;padding:10px;border-bottom:1px solid #0c0c0c}
+.item .ph{width:64px;height:86px;border-radius:10px;background:#111 center/cover no-repeat}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:26px;height:26px;border-radius:8px;border:1px solid #0e0e0e;background:#0b0b0b;color:#cfe3ec;cursor:pointer}
+.qty button:disabled{opacity:.5;cursor:not-allowed}
+.dFoot{border-top:1px solid #0f0f0f;padding:12px}
+.line{display:flex;justify-content:space-between;margin:6px 0}
+.payBtn{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.3);color:#001b1b;font-weight:900;cursor:pointer}
+.infoTiny{font-size:12px;color:#8fb0bd;margin-top:6px}
+.toggle{display:flex;align-items:center;gap:8px;margin-top:10px;background:#0b0b0b;border:1px solid #0f0f0f;border-radius:10px;padding:9px 10px;font-weight:700}
+.toggle input{accent-color:var(--discount);width:18px;height:18px}
+
+/* Reader modal */
+.reader{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;z-index:6;align-items:center;justify-content:center}
+.reader.open{display:flex}
+.reader .panel{width:min(880px,92vw);height:min(80vh,760px);background:#0b0f14;border:1px solid #12202a;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.55);display:flex;flex-direction:column}
+.reader .head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #12202a}
+.reader .body{flex:1;overflow:auto;padding:14px 16px;line-height:1.6;color:#cfe6f7}
+.reader .close{border-radius:10px;border:1px solid #1b3340;background:#0e171e;color:#cfe6f7;padding:6px 10px;cursor:pointer}
+@media (max-width:740px){.top{grid-template-columns:1fr;gap:8px}}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<header>
+  <div class="top">
+    <div class="brand"><span class="dot"></span><span>WINTRA · Kitaplar</span></div>
+    <label class="search">🔎 <input id="q" placeholder="Kitap veya yazar ara…"/></label>
+    <div class="controls">
+      <span class="badge">Canlı · BSC</span>
+      <select id="currency">
+        <option value="TRY">TL</option><option value="USDT">USDT</option><option value="BNB">BNB</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<div class="cat-chips" id="chips"></div>
+
+<main>
+  <section class="row" id="Mine">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>📚 Kitaplarım</span></div></div>
+    <div class="scroller" id="row-mine"></div>
+  </section>
+
+  <section class="row">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>🆕 En Son Eklenenler</span></div></div>
+    <div class="scroller" id="row-latest"></div>
+  </section>
+
+  <section class="row">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>❤️ Aşk</span></div><a class="seeall" href="#Aşk">Hepsini gör</a></div>
+    <div class="scroller" id="row-ask"></div>
+  </section>
+
+  <section class="row" id="Fantastik">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>🧙‍♂️ Fantastik</span></div><a class="seeall" href="#Fantastik">Hepsini gör</a></div>
+    <div class="scroller" id="row-fantastik"></div>
+  </section>
+
+  <section class="row" id="Aksiyon">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>⚔️ Aksiyon</span></div><a class="seeall" href="#Aksiyon">Hepsini gör</a></div>
+    <div class="scroller" id="row-aksiyon"></div>
+  </section>
+
+  <section class="row" id="Bilim">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>🔬 Bilim</span></div></div>
+    <div class="scroller" id="row-bilim"></div>
+  </section>
+
+  <section class="row" id="Bitkiler">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>🌿 Bitkiler</span></div></div>
+    <div class="scroller" id="row-bitkiler"></div>
+  </section>
+
+  <section class="row" id="Felsefe">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>🧠 Felsefe</span></div></div>
+    <div class="scroller" id="row-felsefe"></div>
+  </section>
+
+  <section class="row" id="Dinler">
+    <div class="row-head"><div class="row-title"><span class="bar"></span><span>☯️ Dinler</span></div></div>
+    <div class="scroller" id="row-dinler"></div>
+  </section>
+</main>
+
+<!-- Sepet -->
+<div class="cartFabWrap">
+  <button class="cartFab" id="openCart">🛒 Sepet</button>
+  <span class="bubble" id="cartCount">0</span>
+</div>
+
+<aside class="drawer" id="cart">
+  <div class="dHead"><strong>Sepet</strong><button id="closeCart" class="chip">Kapat</button></div>
+  <div class="dBody" id="cartItems"></div>
+  <div class="dFoot">
+    <div class="line"><span>Ara toplam</span><strong id="subTotal">—</strong></div>
+    <div class="line"><span>İndirim (WTR)</span><strong id="disc">—</strong></div>
+    <div class="line"><span>Genel toplam</span><strong id="grand">—</strong></div>
+    <label class="toggle"><input id="payWTR" type="checkbox"/><span>WTR ile öde (ilk %15)</span></label>
+    <button class="payBtn" id="checkout">Ödemeye geç</button>
+    <div class="infoTiny" id="discountInfo"></div>
+  </div>
+</aside>
+
+<!-- Reader Modal -->
+<div class="reader" id="reader">
+  <div class="panel">
+    <div class="head">
+      <strong id="readerTitle">—</strong>
+      <button class="close" id="readerClose">Kapat</button>
+    </div>
+    <div class="body" id="readerBody">
+      <p>Okuyucu örneği. Buraya kitabın içeriği bağlanacak (EPUB/PDF/HTML).</p>
+      <p>Scroll ettikçe yüzdelik güncellenir ve “Devam Et” barı dolar.</p>
+      <p style="opacity:.6">Demo metin…</p>
+      <div style="height:1400px"></div>
+    </div>
+  </div>
+</div>
+
+<script data-app="wintra">
+/* ====== YILDIZLAR: alan + kayan yıldız (sağ üst ➜ sol alt, izli) ====== */
+(function stars(){
+  const c=document.getElementById('stars'),x=c.getContext('2d');let w,h,field=[],shoot=null,tLast=0;
+  function R(){
+    w=c.width=innerWidth;h=c.height=innerHeight;
+    field=Array.from({length:560},()=>({x:Math.random()*w,y:Math.random()*h,dx:-(.18+.38*Math.random()),dy:(.08+.28*Math.random()),r:.25+Math.random()*1.25,alpha:.6}));
+  }
+  function wrap(a){ if(a.x<-2)a.x=w+2; if(a.x>w+2)a.x=-2; if(a.y>h+2)a.y=-2; if(a.y<-2)a.y=h+2; }
+  function spawnShooting(){
+    const startX=w-10, startY=Math.random()*Math.min(0.3*h, 0.35*h);
+    const speed=8+Math.random()*4;
+    const angle=Math.atan2(h-startY, -w); // negatif x, pozitif y (sağ üst ➜ sol alt)
+    shoot={x:startX, y:startY, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed, trail:[], life:0};
+  }
+  function drawShooting(){
+    if(!shoot) return;
+    shoot.trail.unshift({x:shoot.x,y:shoot.y,alpha:1});
+    shoot.trail=shoot.trail.slice(0,22);
+    const glow='rgba(180,230,255,0.9)';
+    x.save();
+    x.beginPath();x.arc(shoot.x,shoot.y,1.8,0,Math.PI*2);
+    x.fillStyle='white';x.shadowBlur=18;x.shadowColor=glow;x.fill();
+    for(let i=0;i<shoot.trail.length-1;i++){
+      const a=shoot.trail[i], b=shoot.trail[i+1];
+      x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);
+      const g=x.createLinearGradient(a.x,a.y,b.x,b.y);
+      g.addColorStop(0,`rgba(180,230,255,${0.35*(1-i/22)})`);
+      g.addColorStop(1,'rgba(180,230,255,0)');
+      x.strokeStyle=g; x.lineWidth=2.2-(i*0.08); x.stroke();
+    }
+    x.restore();
+    shoot.x+=shoot.vx; shoot.y+=shoot.vy; shoot.life++;
+    if(shoot.x<-50 || shoot.y>h+50) shoot=null;
+  }
+  function T(ts){
+    const dt=ts-(tLast||ts); tLast=ts;
+    x.clearRect(0,0,w,h);
+    for(const a of field){
+      x.globalAlpha=a.alpha; x.beginPath();x.arc(a.x,a.y,a.r,0,Math.PI*2);x.fillStyle='#fff';x.fill();
+      a.x+=a.dx*(dt/16); a.y+=a.dy*(dt/16); wrap(a);
+    }
+    x.globalAlpha=1;
+    if(!shoot && Math.random()<0.015){ spawnShooting(); }
+    drawShooting();
+    requestAnimationFrame(T);
+  }
+  addEventListener('resize',R); R(); requestAnimationFrame(T);
+})();
+
+/* ====== DATA (single-declare) ====== */
+const EX={USDT:1,BNB:600,TRY:34};
+const rows={
+  latest:document.getElementById('row-latest'),
+  ask:document.getElementById('row-ask'),
+  fantastik:document.getElementById('row-fantastik'),
+  aksiyon:document.getElementById('row-aksiyon'),
+  bilim:document.getElementById('row-bilim'),
+  bitkiler:document.getElementById('row-bitkiler'),
+  felsefe:document.getElementById('row-felsefe'),
+  dinler:document.getElementById('row-dinler'),
+  mine:document.getElementById('row-mine')
+};
+const books=[
+  {id:'b01',cat:'Aşk',t:'Eşimin Tutsağıyım',y:'Annie Whipple',cover:'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?q=80&w=700&auto=format&fit=crop',usd:3.2,latest:true},
+  {id:'b02',cat:'Aşk',t:'Kaderin Cilvesi',y:'Elle Chipp',cover:'https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=700&auto=format&fit=crop',usd:3.1,latest:true},
+  {id:'b03',cat:'Aşk',t:'Kaderin Laneti',y:'—',cover:'https://images.unsplash.com/photo-1496483648148-47c686dc86a8?q=80&w=700&auto=format&fit=crop',usd:2.9,latest:true},
+  {id:'b04',cat:'Aşk',t:'Alfa’nın Isırığı',y:'Lydia Rose',cover:'https://images.unsplash.com/photo-1519682337058-a94d519337bc?q=80&w=700&auto=format&fit=crop',usd:3.6},
+  {id:'b05',cat:'Aşk',t:'Alfa Kralın Melez Eşi',y:'Breeanna Belcher',cover:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=700&auto=format&fit=crop',usd:3.8},
+  {id:'b06',cat:'Fantastik',t:'Kör Lycan Kralın Kraliçesi',y:'K. L. Harr',cover:'https://images.unsplash.com/photo-1549880338-65ddcdfd017b?q=80&w=700&auto=format&fit=crop',usd:4.4},
+  {id:'b07',cat:'Aşk',t:'Aşkın Büyüsü',y:'Danielle Jaggan',cover:'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=700&auto=format&fit=crop',usd:3.3},
+  {id:'b08',cat:'Aksiyon',t:'Gölge Operasyonu',y:'N. Demir',cover:'https://images.unsplash.com/photo-1520975922071-a30f7699c95f?q=80&w=700&auto=format&fit=crop',usd:3.9},
+  {id:'b09',cat:'Aksiyon',t:'Sıfır Saat',y:'E. Kar',cover:'https://images.unsplash.com/photo-1526045612212-70caf35c14df?q=80&w=700&auto=format&fit=crop',usd:3.1},
+  {id:'b10',cat:'Bilim',t:'Kozmos Günlüğü',y:'C. Ün',cover:'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=700&auto=format&fit=crop',usd:5.0},
+  {id:'b11',cat:'Bilim',t:'Zihin Zirvesi',y:'P. Güneş',cover:'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=700&auto=format&fit=crop',usd:4.4},
+  {id:'b12',cat:'Bitkiler',t:'Yeşil Atlas',y:'B. Ada',cover:'https://images.unsplash.com/photo-1520975922071-a30f7699c95f?q=80&w=700&auto=format&fit=crop',usd:2.6},
+  {id:'b13',cat:'Bitkiler',t:'Botanik Güncesi',y:'S. Flora',cover:'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?q=80&w=700&auto=format&fit=crop',usd:3.1},
+  {id:'b14',cat:'Felsefe',t:'Sorgu Defteri',y:'A. Kural',cover:'https://images.unsplash.com/photo-1473181488821-2d23949a045a?q=80&w=700&auto=format&fit=crop',usd:3.7},
+  {id:'b15',cat:'Felsefe',t:'Söz ve Anlam',y:'H. Düş',cover:'https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=700&auto=format&fit=crop',usd:3.2},
+  {id:'b16',cat:'Dinler',t:'Işık Yolu',y:'N. Barış',cover:'https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=700&auto=format&fit=crop',usd:3.3},
+  {id:'b17',cat:'Dinler',t:'Sükûnet',y:'R. İkra',cover:'https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=700&auto=format&fit=crop',usd:3.0}
+];
+
+/* ====== HELPERS / STATE ====== */
+const $=s=>document.querySelector(s); const el=(t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!=null)e.innerHTML=h; return e;};
+const baskets=new Map();
+const OWN_KEY='myBooks', READ_KEY='readingProgress';
+const getOwned=()=>{try{return JSON.parse(localStorage.getItem(OWN_KEY)||'[]')}catch{return[]}};
+const setOwned=a=>localStorage.setItem(OWN_KEY,JSON.stringify([...new Set(a)]));
+const getRead=()=>{try{return JSON.parse(localStorage.getItem(READ_KEY)||'{}')}catch{return{}}};
+const setRead=o=>localStorage.setItem(READ_KEY,JSON.stringify(o));
+const getPercent=id=>Math.max(0, Math.min(100, Math.round((getRead()[id]?.percent||0))));
+
+/* fiyat & WTR */
+const priceIn=(usd,ccy)=> ccy==='TRY'?usd*EX.TRY : ccy==='USDT'?usd : usd/EX.BNB;
+function fmt(v,ccy){ if(ccy==='TRY')return new Intl.NumberFormat('tr-TR',{style:'currency',currency:'TRY',maximumFractionDigits:0}).format(v);
+  if(ccy==='USDT')return `${v.toFixed(2)} USDT`; return `${v.toFixed(5)} BNB`; }
+const getWTRDiscount=()=> (+(localStorage.getItem('wtrPurchases')||0)===0?0.15:0.10);
+const markWTRPurchased=()=> localStorage.setItem('wtrPurchases', (+(localStorage.getItem('wtrPurchases')||0)+1));
+
+/* ====== RENDER ====== */
+function bookCard(b){
+  const owned=getOwned().includes(b.id);
+  const pct=getPercent(b.id);
+  const c=el('div','card');
+  c.innerHTML=`
+    <div class="cover" style="background-image:url('${b.cover}')"></div>
+    <div class="meta">
+      ${owned?`<div class="prog" aria-label="okuma yüzdesi"><div class="bar" style="width:${pct}%" data-progbar="${b.id}"></div></div>`:''}
+      <div class="ttl" style="margin-top:${owned? '8px':'0'}">${b.t}</div>
+      <div class="auth">by ${b.y}${owned?` · <span class="muted" data-progtext="${b.id}" style="color:#b8d2e2">${pct}% okundu</span>`:''}</div>
+      <div class="price"><div class="num" data-id="${b.id}">—</div><div class="discount" data-dd="${b.id}"></div></div>
+      <div class="rowbtns">
+        ${
+          owned
+            ? `<button class="btn" data-read="${b.id}">${pct>0?'Devam Et':'Oku'}</button>`
+            : `<button class="btn" data-add="${b.id}">Sepete ekle</button>
+               <button class="btn sec" data-buy="${b.id}">Hızlı Al</button>`
+        }
+      </div>
+    </div>`;
+  return c;
+}
+
+const categories=[...new Set(books.map(b=>b.cat))];
+const chips=$('#chips'); categories.forEach(cat=>{const ch=el('button','chip',cat); ch.onclick=()=>document.getElementById(cat)?.scrollIntoView({behavior:'smooth',block:'start'}); chips.appendChild(ch);});
+
+const rowsEl={latest:rows.latest,Aşk:rows.ask,Fantastik:rows.fantastik,Aksiyon:rows.aksiyon,Bilim:rows.bilim,Bitkiler:rows.bitkiler,Felsefe:rows.felsefe,Dinler:rows.dinler,mine:rows.mine};
+
+function fillRows(filtered=books){
+  Object.values(rowsEl).forEach(r=>r.innerHTML='');
+
+  const ownedIds=getOwned();
+  const mine=books.filter(b=>ownedIds.includes(b.id));
+  if(mine.length===0){ rowsEl.mine.innerHTML='<div style="color:#88a9b6;margin:6px 8px">Satın aldığın kitaplar burada görünecek.</div>'; }
+  else mine.forEach(b=>rowsEl.mine.appendChild(bookCard(b)));
+
+  filtered.filter(b=>b.latest).forEach(b=>rowsEl.latest.appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Aşk').forEach(b=>rowsEl['Aşk'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Fantastik').forEach(b=>rowsEl['Fantastik'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Aksiyon').forEach(b=>rowsEl['Aksiyon'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Bilim').forEach(b=>rowsEl['Bilim'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Bitkiler').forEach(b=>rowsEl['Bitkiler'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Felsefe').forEach(b=>rowsEl['Felsefe'].appendChild(bookCard(b)));
+  filtered.filter(b=>b.cat==='Dinler').forEach(b=>rowsEl['Dinler'].appendChild(bookCard(b)));
+
+  updatePrices();
+  bindButtons();
+  refreshOwnedProgressUI();
+}
+
+/* search */
+const q=document.getElementById('q');
+q.addEventListener('input', ()=>{
+  const s=q.value.trim().toLowerCase();
+  if(!s) return fillRows();
+  const f=books.filter(b=> b.t.toLowerCase().includes(s) || (b.y||'').toLowerCase().includes(s) || b.cat.toLowerCase().includes(s));
+  fillRows(f);
+});
+
+/* currency & WTR toggle */
+document.getElementById('currency').addEventListener('change',updatePrices);
+document.addEventListener('change',e=>{ if(e.target?.id==='payWTR') updatePrices(); });
+
+function updatePrices(){
+  const ccy=document.getElementById('currency').value;
+  const useWTR=document.getElementById('payWTR')?.checked;
+  const disc=useWTR?getWTRDiscount():0;
+  books.forEach(b=>{
+    const p=priceIn(b.usd, ccy);
+    const elPrice=document.querySelector(`.num[data-id="${b.id}"]`);
+    const elDisc=document.querySelector(`.discount[data-dd="${b.id}"]`);
+    if(!elPrice) return;
+    if(useWTR){ elPrice.textContent=fmt(p*(1-disc), ccy); elDisc.textContent=`-${Math.round(disc*100)}%`; }
+    else{ elPrice.textContent=fmt(p, ccy); elDisc.textContent=''; }
+  });
+  updateCartTotals();
+}
+
+/* cart bubble */
+function cartCount(){let n=0; for(const it of baskets.values()) n+=it.qty; return n;}
+function updateCartBubble(){const n=cartCount(); const b=document.getElementById('cartCount'); b.textContent=n; b.style.display=n>0?'flex':'none';}
+
+/* bind buttons */
+function bindButtons(){
+  document.querySelectorAll('[data-add]').forEach(btn=>{
+    btn.onclick=()=>{const id=btn.dataset.add; if(getOwned().includes(id)||baskets.has(id))return;
+      baskets.set(id,{id,qty:1}); renderCart(); updateCartBubble();};
+  });
+  document.querySelectorAll('[data-buy]').forEach(btn=>{
+    btn.onclick=()=>{const id=btn.dataset.buy; if(getOwned().includes(id))return;
+      baskets.clear(); baskets.set(id,{id,qty:1}); renderCart(); updateCartBubble(); openCart();};
+  });
+  document.querySelectorAll('[data-read]').forEach(btn=>{
+    btn.onclick=()=> openReader(btn.dataset.read);
+  });
+}
+
+/* cart drawer */
+const drawer=document.getElementById('cart');
+document.getElementById('openCart').onclick=openCart;
+document.getElementById('closeCart').onclick=()=>drawer.classList.remove('open');
+function openCart(){drawer.classList.add('open');}
+
+function renderCart(){
+  const wrap=document.getElementById('cartItems'); wrap.innerHTML='';
+  const ccy=document.getElementById('currency').value;
+  if(baskets.size===0){ wrap.innerHTML='<p style="color:#9fb4c0">Sepet boş.</p>'; updateCartTotals(); return; }
+  for(const {id,qty} of baskets.values()){
+    const b=books.find(x=>x.id===id);
+    const item=el('div','item',`
+      <div class="ph" style="background-image:url('${b.cover}')"></div>
+      <div>
+        <div style="font-weight:800">${b.t}</div>
+        <div style="color:#87a2af;font-size:13px">by ${b.y} · ${b.cat}</div>
+        <div class="qty" style="margin-top:8px">
+          <button data-dec="${id}">Kaldır</button>
+          <span>Adet: 1</span>
+          <button disabled title="Her kitap 1 adet">+</button>
+        </div>
+      </div>
+      <div style="font-weight:900" data-line="${id}">—</div>`);
+    wrap.appendChild(item);
+  }
+  wrap.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>{baskets.delete(b.dataset.dec); renderCart(); updateCartBubble();});
+  updateCartTotals();
+}
+
+function updateCartTotals(){
+  const ccy=document.getElementById('currency').value;
+  const useWTR=document.getElementById('payWTR')?.checked;
+  const discRate=useWTR?getWTRDiscount():0;
+  let sub=0;
+  for(const {id,qty} of baskets.values()){
+    const b=books.find(x=>x.id===id);
+    const p=priceIn(b.usd,ccy);
+    const line=useWTR?p*(1-discRate)*qty:p*qty;
+    sub+=line;
+    const cell=document.querySelector(`[data-line="${id}"]`); if(cell) cell.textContent=fmt(line,ccy);
+  }
+  document.getElementById('subTotal').textContent=fmt(sub/(1-discRate || 1),ccy);
+  document.getElementById('disc').textContent=useWTR?`-${Math.round(discRate*100)}%`:'—';
+  document.getElementById('grand').textContent=fmt(sub,ccy);
+  document.getElementById('discountInfo').textContent=useWTR?'İlk WTR alışverişinde %15 indirim uygulanıyor.':'WTR ile ödemede indirim kazanırsın.';
+}
+
+/* checkout demo */
+document.getElementById('checkout').onclick=()=>{
+  const useWTR=document.getElementById('payWTR')?.checked;
+  if(baskets.size===0){ alert('Sepet boş.'); return; }
+  if(useWTR) markWTRPurchased();
+  const owned=getOwned(); for(const {id} of baskets.values()){ if(!owned.includes(id)) owned.push(id); }
+  setOwned(owned);
+  alert('Demo: ödeme akışı bağlanmadı.');
+  baskets.clear(); renderCart(); updateCartBubble(); updatePrices(); fillRows();
+};
+
+/* ====== READER ====== */
+const reader=document.getElementById('reader'), readerTitle=document.getElementById('readerTitle'), readerBody=document.getElementById('readerBody');
+document.getElementById('readerClose').onclick=closeReader;
+let currentReadId=null;
+
+function openReader(id){
+  currentReadId=id;
+  const b=books.find(x=>x.id===id); readerTitle.textContent=b?.t||'Okuyucu';
+  const r=getRead(); r[id]={...(r[id]||{}), started:true, pos:r[id]?.pos||0, percent:r[id]?.percent||0, ts:Date.now()}; setRead(r);
+  reader.classList.add('open');
+  readerBody.scrollTo({top:r[id].pos||0,behavior:'instant'});
+  updateProgressFromScroll();
+}
+function closeReader(){
+  saveReaderState();
+  reader.classList.remove('open'); currentReadId=null;
+}
+function saveReaderState(){
+  if(!currentReadId) return;
+  const pos=readerBody.scrollTop, total=readerBody.scrollHeight-readerBody.clientHeight;
+  const pct=Math.max(0, Math.min(100, Math.round((pos/Math.max(1,total))*100)));
+  const r=getRead(); r[currentReadId]={...(r[currentReadId]||{}), started:true, pos, percent:pct, ts:Date.now()}; setRead(r);
+  refreshOwnedProgressUI();
+}
+function updateProgressFromScroll(){
+  if(!currentReadId) return;
+  const pos=readerBody.scrollTop, total=readerBody.scrollHeight-readerBody.clientHeight;
+  const pct=Math.max(0, Math.min(100, Math.round((pos/Math.max(1,total))*100)));
+  const r=getRead(); r[currentReadId]={...(r[currentReadId]||{}), started:true, pos, percent:pct, ts:Date.now()}; setRead(r);
+  const bar=document.querySelector(`[data-progbar="${currentReadId}"]`);
+  const txt=document.querySelector(`[data-progtext="${currentReadId}"]`);
+  if(bar) bar.style.width=pct+'%';
+  if(txt) txt.textContent=`${pct}% okundu`;
+}
+readerBody.addEventListener('scroll', ()=>{ if(currentReadId) updateProgressFromScroll(); });
+
+function refreshOwnedProgressUI(){
+  const owned=getOwned();
+  owned.forEach(id=>{
+    const pct=getPercent(id);
+    const bar=document.querySelector(`[data-progbar="${id}"]`);
+    const txt=document.querySelector(`[data-progtext="${id}"]`);
+    const readBtn=document.querySelector(`[data-read="${id}"]`);
+    if(bar) bar.style.width=pct+'%';
+    if(txt) txt.textContent=`${pct}% okundu`;
+    if(readBtn) readBtn.textContent = pct>0 ? 'Devam Et' : 'Oku';
+  });
+}
+
+/* ====== INIT ====== */
+function init(){ fillRows(); updatePrices(); renderCart(); updateCartBubble(); }
+init();
+
+/* ====== SELF TESTS (dev console) ====== */
+(function tests(){
+  try{
+    console.assert(typeof EX==='object' && EX.TRY && EX.USDT && EX.BNB, 'EX kur tablosu hazır değil');
+    console.assert(document.querySelectorAll('script[data-app="wintra"]').length===1, 'Script iki kez eklenmiş olabilir');
+    const btns=[...document.querySelectorAll('.btn')];
+    console.assert(btns.length>0, 'Kart butonları render edilmedi');
+  }catch(e){ console.warn('Self test uyarısı:', e); }
+})();
+</script>
+</body>
+</html>
