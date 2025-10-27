@@ -3,45 +3,76 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wintra • Navbar v8 (desync + spotlight)</title>
+  <title>Wintra • Navbar v10 (Roadmap + Theme) + Faster Stars</title>
   <link rel="icon" type="image/webp" href="assets/wtr_logo.webp" />
   <style>
-    /* Yalnızca değişkenler */
+    /* ========================
+       THEME VARIABLES
+       ======================== */
     :root{
       --bg:#000000; --text:#eaf5ff;
       --accent:#7df8d3; --accent-2:#a98cff; --accent-3:#dce6f0;
       --grad:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
       --border:1px solid rgba(255,255,255,.12); --radius:16px;
+      --card-bg:rgba(255,255,255,.03);
+      --card-border:1px solid rgba(255,255,255,.08);
+      --mut:#a9b8c7;
+      --star:#ffffff; /* fixed + canvas stars color (dark theme) */
+    }
+    /* Light theme overrides */
+    .theme-light{
+      --bg:#e9eef6; --text:#0b1220;
+      --accent:#6feccf; --accent-2:#8c7bff; --accent-3:#6ea0ff;
+      --grad:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+      --border:1px solid rgba(0,0,0,.12); --radius:16px;
+      --card-bg:rgba(255,255,255,.9);
+      --card-border:1px solid rgba(0,0,0,.06);
+      --mut:#5a6a7a;
+      --star:#000000; /* ⭐ in light theme = black for contrast */
     }
 
-    /* Genel */
-    body{ margin:0; background:#000; color:var(--text);
-      font:500 15px/1.5 Inter,system-ui,sans-serif;
-      overflow:auto; /* görünmezlik olmasın diye auto yaptık */
-      min-height:100vh;
-    }
+    /* ========================
+       BASE
+       ======================== */
+    html,body{ height:100%; }
+    body{ margin:0; background:var(--bg); color:var(--text);
+      font:500 15px/1.5 Inter,system-ui,sans-serif; overflow:auto; min-height:100vh; }
 
-    /* --- Wintra Home v2 --- */
     .announcement{ background:linear-gradient(90deg,#7df8d3,#a98cff); color:#000; font-weight:700; text-align:center; padding:6px 10px; letter-spacing:.3px; }
-    .section{ max-width:1100px; margin:60px auto; padding:0 18px; } .section h2{ font-size:clamp(22px,3.4vw,30px); margin:0 0 14px; }
+    .section{ max-width:1100px; margin:60px auto; padding:0 18px; }
+    .section h2{ font-size:clamp(22px,3.4vw,30px); margin:0 0 14px; }
     .features{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:22px; margin-top:18px; }
-    .card{ padding:24px; border:1px solid rgba(255,255,255,.08); border-radius:16px; background:rgba(255,255,255,.03); backdrop-filter:blur(6px); box-shadow:0 6px 18px rgba(0,0,0,.25); transition:.25s; }
-    .card:hover{ transform:translateY(-6px); box-shadow:0 10px 28px rgba(0,0,0,.45); } .card h3{ margin:0 0 8px; font-size:18px }
+    .card{ padding:24px; border:var(--card-border); border-radius:16px; background:var(--card-bg); backdrop-filter:blur(6px); box-shadow:0 6px 18px rgba(0,0,0,.25); transition:.25s; }
+    .theme-light .card{ box-shadow:0 6px 18px rgba(0,0,0,.08); }
+    .card:hover{ transform:translateY(-6px); box-shadow:0 10px 28px rgba(0,0,0,.45); }
+    .theme-light .card:hover{ box-shadow:0 10px 28px rgba(0,0,0,.12); }
+    .card h3{ margin:0 0 8px; font-size:18px }
+    .mut{ color:var(--mut); }
+
     .steps{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:18px; margin-top:12px; }
     .step{ display:flex; gap:12px; align-items:flex-start; padding:16px; border:1px dashed rgba(255,255,255,.12); border-radius:14px; }
+    .theme-light .step{ border-color:rgba(0,0,0,.15); }
     .step .num{ width:32px; height:32px; border-radius:10px; display:grid; place-items:center; background:rgba(255,255,255,.08); font-weight:800; }
-    .partners{ display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; opacity:.9 } .partner{ padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04) }
-    .chain{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.03); }
-    .chain .pill{ padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); }
-    .bottom-cta{ text-align:center; margin:70px auto 40px } .btn-cta{ background:var(--grad); color:#000; box-shadow:0 6px 18px rgba(111,240,195,.25) }
+    .theme-light .step .num{ background:rgba(0,0,0,.06); }
 
-    /* Arka plan katmanları */
+    .partners{ display:flex; flex-wrap:wrap; gap:12px; margin-top:14px; opacity:.9 }
+    .partner{ padding:8px 12px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04) }
+    .theme-light .partner{ border-color:rgba(0,0,0,.12); background:rgba(255,255,255,.7); }
+
+    .chain{ display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; padding:16px; border:1px solid rgba(255,255,255,.12); border-radius:14px; background:rgba(255,255,255,.03); }
+    .theme-light .chain{ border-color:rgba(0,0,0,.12); background:rgba(255,255,255,.85); }
+    .chain .pill{ padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06); }
+    .theme-light .chain .pill{ border-color:rgba(0,0,0,.12); background:rgba(0,0,0,.06); }
+
+    .bottom-cta{ text-align:center; margin:70px auto 40px }
+    .btn-cta{ background:var(--grad); color:#000; box-shadow:0 6px 18px rgba(111,240,195,.25) }
+
+    /* Background layers */
     .particles{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none; mix-blend-mode:screen; }
     .stars{ position:fixed; inset:0; z-index:0; pointer-events:none; }
     .spotlight{ position:fixed; left:50%; bottom:-10vh; transform:translateX(-50%); width:140vw; height:60vh; pointer-events:none; z-index:0;
-      background:
-        radial-gradient(ellipse at center, rgba(125,248,211,.18), rgba(125,248,211,0) 60%),
-        radial-gradient(ellipse at center, rgba(169,140,255,.12), rgba(169,140,255,0) 70%);
+      background: radial-gradient(ellipse at center, rgba(125,248,211,.18), rgba(125,248,211,0) 60%),
+                  radial-gradient(ellipse at center, rgba(169,140,255,.12), rgba(169,140,255,0) 70%);
       filter:blur(28px) brightness(1.15);
     }
     .spotlight::before{ content:""; position:absolute; left:50%; top:-10%; transform:translateX(-50%) rotate(-7deg); width:120vw; height:70vh; opacity:.25;
@@ -50,7 +81,7 @@
     }
     @keyframes beam{ from{opacity:.18;} to{opacity:.32;} }
 
-    /* Partikül anim */
+    /* Particles (W) */
     .particle{ position:absolute; display:grid; place-items:center; border-radius:8px; color:#000; font-weight:900; font-family:Inter,system-ui,sans-serif; box-shadow:0 0 16px rgba(125,248,211,.35); opacity:.95; will-change:transform,opacity; animation:fall linear forwards; --dxStart:0px; --dxEnd:0px; }
     .particle span{ filter:drop-shadow(0 1px 2px rgba(0,0,0,.6)); animation:spin 6s linear infinite; }
     @keyframes fall{ 0%{ transform:translate3d(var(--dxStart),-60px,0); opacity:.95 } 100%{ transform:translate3d(var(--dxEnd),105vh,0); opacity:0 } }
@@ -62,6 +93,7 @@
     .navbar-wrap{ position:sticky; top:0; z-index:10; }
     .navbar{ display:flex; align-items:center; justify-content:space-between; padding:10px 18px; margin:12px auto; max-width:1100px;
       background:rgba(15,20,26,.7); backdrop-filter:blur(10px); border:var(--border); border-radius:var(--radius); position:relative; overflow:hidden; }
+    .theme-light .navbar{ background:rgba(255,255,255,.7); }
     .navbar::after{ content:""; position:absolute; left:-40%; top:0; width:80%; height:2px; background:var(--grad); animation:glowLine 6s linear infinite; }
     @keyframes glowLine{ 0%{ transform:translateX(-50%) scaleX(.4); opacity:.3 } 50%{ transform:translateX(100%) scaleX(1); opacity:1 } 100%{ transform:translateX(250%) scaleX(.4); opacity:.3 } }
     .brand{ display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--text) }
@@ -69,6 +101,7 @@
     .nav{ display:flex; align-items:center; gap:14px }
     .nav a{ color:var(--text); text-decoration:none; padding:8px 10px; border-radius:12px; opacity:.9; transition:.2s }
     .nav a:hover{ background:rgba(255,255,255,.05); opacity:1 }
+    .theme-light .nav a:hover{ background:rgba(0,0,0,.06); }
     .actions{ display:flex; align-items:center; gap:10px }
     .btn{ border:0; cursor:pointer; padding:10px 14px; border-radius:14px; font-weight:650 }
     .btn-ghost{ background:transparent; color:var(--text); box-shadow:inset 0 0 0 1px rgba(200,209,218,.22) }
@@ -76,16 +109,21 @@
 
     .hero{ max-width:1100px; margin:40px auto; padding:20px; text-align:center }
     .badge{ display:inline-flex; gap:8px; align-items:center; padding:6px 10px; border-radius:999px; border:var(--border); background:rgba(255,255,255,.05) }
+    .theme-light .badge{ background:rgba(0,0,0,.06); }
     .h1{ font-size:clamp(26px,4vw,42px); margin:14px 0 8px; font-weight:800 }
-    .sub{ color:#aaa }
+    .sub{ color:var(--mut) }
 
-    /* Hakkında overlay */
-    .about-overlay{ position:fixed; left:0; right:0; top:76px; bottom:0; z-index:9; background:rgba(0,0,0,.35); backdrop-filter:blur(6px); overflow:auto; scrollbar-width:none; }
-    .about-overlay::-webkit-scrollbar{ display:none }
-    .about-inner{ max-width:1000px; margin:0 auto; padding:20px; color:#d8e3ee }
-    .about-inner h2{ margin:0 0 12px } .about-inner h3{ margin:22px 0 8px; font-size:18px }
-    .about-inner ul, .about-inner ol{ margin:0 0 18px; padding-left:18px; line-height:1.7 }
-    .about-header{ display:flex; align-items:center; justify-content:space-between; position:static; background:transparent !important; backdrop-filter:none !important; padding:0 !important; margin-bottom:12px; }
+    /* Overlays */
+    .overlay{ position:fixed; left:0; right:0; top:76px; bottom:0; z-index:9; background:rgba(0,0,0,.35); backdrop-filter:blur(6px); overflow:auto; scrollbar-width:none; }
+    .overlay::-webkit-scrollbar{ display:none }
+    .overlay-inner{ max-width:1000px; margin:0 auto; padding:20px; color:#d8e3ee }
+    .theme-light .overlay-inner{ color:#0b1220 }
+    .overlay-inner h2{ margin:0 0 12px } .overlay-inner h3{ margin:22px 0 8px; font-size:18px }
+    .overlay-inner ul, .overlay-inner ol{ margin:0 0 18px; padding-left:18px; line-height:1.7 }
+    .overlay-header{ display:flex; align-items:center; justify-content:space-between; position:static; background:transparent !important; backdrop-filter:none !important; padding:0 !important; margin-bottom:12px; }
+
+    /* Canvas for moving stars */
+    #starCanvas{ position:absolute; inset:0; width:100%; height:100%; display:block; }
   </style>
 </head>
 <body>
@@ -104,8 +142,10 @@
         <a href="#" data-nft>NFT store</a>
         <a href="#" data-books>Kitaplar</a>
         <a href="#about" id="aboutLink">Hakkında</a>
+        <a href="#roadmap" id="roadmapLink">Gelecek Hedefleri</a>
       </div>
       <div class="actions">
+        <button class="btn btn-ghost" id="themeToggle" title="Tema değiştir">🌓 Tema</button>
         <button class="btn btn-ghost" id="connectBtn">Cüzdanı bağlayın</button>
         <a class="btn btn-ghost" href="#" data-cart>🛒 Sepet</a>
         <a class="btn btn-cta" href="#" data-pay>WTR ile Öde</a>
@@ -125,11 +165,11 @@
   </section>
 
   <!-- HAKKINDA OVERLAY -->
-  <section id="aboutOverlay" class="about-overlay" aria-modal="true" hidden>
-    <div class="about-inner">
-      <div class="about-header">
+  <section id="aboutOverlay" class="overlay" aria-modal="true" hidden>
+    <div class="overlay-inner">
+      <div class="overlay-header">
         <h2>Wintra Coin — Hakkında</h2>
-        <button id="aboutClose" class="btn btn-cta" style="padding:6px 10px;">Kapat</button>
+        <button data-close="about" class="btn btn-cta" style="padding:6px 10px;">Kapat</button>
       </div>
 
       <section class="section">
@@ -146,6 +186,7 @@
         <div class="partners">
           <div class="partner">🪙 WTR</div><div class="partner">💠 BNB Chain</div><div class="partner">🦊 MetaMask</div><div class="partner">🥞 PancakeSwap</div>
         </div>
+        <p class="mut" style="margin-top:10px">Felsefe: <b>WTR = emeğin dijital karşılığı</b> • <b>NFT = giriş bileti</b> • <b>Garden = ücretsiz sağlıklı sebze ödülü</b>.</p>
       </section>
 
       <section class="section">
@@ -167,24 +208,125 @@
     </div>
   </section>
 
+  <!-- ROADMAP OVERLAY -->
+  <section id="roadmapOverlay" class="overlay" aria-modal="true" hidden>
+    <div class="overlay-inner">
+      <div class="overlay-header">
+        <h2>Gelecek Hedefleri — Roadmap v2</h2>
+        <button data-close="roadmap" class="btn btn-cta" style="padding:6px 10px;">Kapat</button>
+      </div>
+
+      <section class="section">
+        <h3>1) Gelecek Hedefleri Sayfası</h3>
+        <ul>
+          <li>WTR Garden fiziksel üretim planı ve takvimi.</li>
+          <li>NFT = giriş bileti, Garden = ödül sisteminin detayları.</li>
+          <li>Topluluk büyüme ve şeffaflık metrikleri.</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h3>2) Karanlık/Açık Tema</h3>
+        <p class="mut">Tema anahtarını sağ üstte bulabilirsin. Seçim <code>localStorage</code>'a kaydedilir.</p>
+      </section>
+
+      <section class="section">
+        <h3>3) WTR Garden v1</h3>
+        <div class="card">
+          <p><b>Garden Pass (NFT)</b> sahiplerine bölgede ücretsiz taze sebze erişimi. Stake edenlere hasat NFT’si.</p>
+          <p class="mut">Uzun vadede sensör verisi (nem, sıcaklık) ve hasat kanıtları on-chain yayınlanacak.</p>
+          <a class="btn btn-cta" href="#" id="joinGarden">Katıl (yakında)</a>
+        </div>
+      </section>
+    </div>
+  </section>
+
   <script>
-    // Basit cüzdan bağla placeholder
+    // --- Theme bootstrap ---
+    (function themeInit(){
+      const saved = localStorage.getItem('wintra_theme');
+      const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+      const isLight = saved ? saved === 'light' : prefersLight ? true : false;
+      document.body.classList.toggle('theme-light', isLight);
+    })();
+
+    document.getElementById('themeToggle')?.addEventListener('click', ()=>{
+      const isLight = document.body.classList.toggle('theme-light');
+      localStorage.setItem('wintra_theme', isLight ? 'light' : 'dark');
+    });
+
+    // Placeholder wallet
     document.getElementById('connectBtn')?.addEventListener('click', () => alert('Cüzdan bağlama fonksiyonunu buraya ekle'));
 
-    // ⭐ Sabit yıldızlar
+    // ⭐ FIXED STARS (DOM dots) — color reacts to theme via CSS var
     (function makeStars(){
       const stars = document.getElementById('stars'); if(!stars) return;
       const total = 240;
       for(let i=0;i<total;i++){
         const s = document.createElement('div');
         const size = Math.random() < 0.85 ? (1 + Math.random()*1.2) : (1.6 + Math.random()*1.2);
-        Object.assign(s.style,{position:'absolute',width:size+'px',height:size+'px',borderRadius:'50%',background:'#fff',
-          opacity:(0.3 + Math.random()*0.7).toFixed(2), left:(Math.random()*100)+'%', top:(Math.random()*100)+'%'});
+        Object.assign(s.style,{
+          position:'absolute',width:size+'px',height:size+'px',borderRadius:'50%',
+          background:'var(--star)', /* theme aware */
+          opacity:(0.3 + Math.random()*0.7).toFixed(2), left:(Math.random()*100)+'%', top:(Math.random()*100)+'%'
+        });
         stars.appendChild(s);
       }
     })();
 
-    // 🎇 W partikülleri
+    // ✨ MOVING STARS (canvas) — faster + theme-aware color
+    (function movingStars(){
+      const host = document.getElementById('stars'); if(!host) return;
+      const canvas = document.createElement('canvas');
+      canvas.id = 'starCanvas';
+      canvas.setAttribute('aria-hidden','true');
+      host.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
+      let w=0,h=0,stars=[]; // {x,y,z,r}
+
+      function resize(){
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+        w = canvas.width = Math.floor(innerWidth * dpr);
+        h = canvas.height = Math.floor(innerHeight * dpr);
+        canvas.style.width = innerWidth + 'px';
+        canvas.style.height = innerHeight + 'px';
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        // yoğunluk
+        const count = Math.round((innerWidth * innerHeight) / 4200);
+        stars = Array.from({length:count}, () => ({
+          x: Math.random()*innerWidth,
+          y: Math.random()*innerHeight,
+          z: 0.42 + Math.random()*1.5, // +20% speed base
+          r: 0.7 + Math.random()*1.5
+        }));
+      }
+
+      function step(){
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+        const light = document.body.classList.contains('theme-light');
+        const color = light ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)';
+        const glow  = light ? 'rgba(0,0,0,0.6)' : 'rgba(180,220,255,0.8)';
+        for(const s of stars){
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+          ctx.fillStyle = color;
+          ctx.shadowBlur = 8*s.z; ctx.shadowColor = glow;
+          ctx.fill();
+          // Daha hızlı diyagonal kayma
+          s.x -= 0.192 * s.z;   // önce ~0.16 → %20 artış
+          s.y += 0.084 * s.z;   // önce ~0.07 → %20 artış
+          if(s.x < -2) s.x = innerWidth + 2;
+          if(s.y > innerHeight + 2) s.y = -2;
+        }
+        requestAnimationFrame(step);
+      }
+
+      addEventListener('resize', resize, {passive:true});
+      resize();
+      requestAnimationFrame(step);
+    })();
+
+    // 🎇 W particles
     (function(){
       const container = document.getElementById('particles');
       const maxParticles = 110;
@@ -217,16 +359,24 @@
       (function loop(){ spawnParticle(); setTimeout(loop, 60 + Math.random()*200); })();
     })();
 
-    // Hakkında overlay
+    // Overlays open/close
     (function(){
       const aboutLink = document.getElementById('aboutLink');
-      const overlay = document.getElementById('aboutOverlay');
-      const closeBtn = document.getElementById('aboutClose');
-      function openAbout(){ overlay?.removeAttribute('hidden'); }
-      function closeAbout(){ overlay?.setAttribute('hidden',''); }
-      aboutLink?.addEventListener('click', (e)=>{ e.preventDefault(); openAbout(); history.replaceState(null,'','#about'); });
-      closeBtn?.addEventListener('click', ()=>{ closeAbout(); history.replaceState(null,'','#top'); });
-      if (location.hash === '#about') openAbout();
+      const roadmapLink = document.getElementById('roadmapLink');
+      const about = document.getElementById('aboutOverlay');
+      const roadmap = document.getElementById('roadmapOverlay');
+
+      function open(el, hash){ el?.removeAttribute('hidden'); history.replaceState(null,'', hash); }
+      function close(el){ el?.setAttribute('hidden',''); }
+
+      aboutLink?.addEventListener('click', (e)=>{ e.preventDefault(); open(about,'#about'); });
+      roadmapLink?.addEventListener('click', (e)=>{ e.preventDefault(); open(roadmap,'#roadmap'); });
+
+      document.querySelectorAll('[data-close="about"]').forEach(b=>b.addEventListener('click',()=>{ close(about); history.replaceState(null,'','#top'); }));
+      document.querySelectorAll('[data-close="roadmap"]').forEach(b=>b.addEventListener('click',()=>{ close(roadmap); history.replaceState(null,'','#top'); }));
+
+      if (location.hash === '#about') open(about,'#about');
+      if (location.hash === '#roadmap') open(roadmap,'#roadmap');
     })();
 
     // 🔧 BASE PATH FIX — güvenli
@@ -234,23 +384,15 @@
       try{
         let base = '/';
         const parts = location.pathname.split('/').filter(Boolean);
-        // GitHub Pages proje kökü: username.github.io/REPO/*
         if (location.hostname.endsWith('github.io') && parts.length > 0) {
           base = '/' + parts[0] + '/';
         }
-        // Ana sayfa
         document.querySelectorAll('[data-home]').forEach(a => a.setAttribute('href', base + 'index.html'));
-        // Sepet
         document.querySelectorAll('[data-cart]').forEach(a => a.setAttribute('href', base + 'cart/'));
-        // Ödeme
         document.querySelectorAll('[data-pay]').forEach(a => a.setAttribute('href', base + 'pay/'));
-        // NFT
         document.querySelectorAll('[data-nft]').forEach(a => a.setAttribute('href', base + 'nft/'));
-        // Kitaplar
         document.querySelectorAll('[data-books]').forEach(a => a.setAttribute('href', base + 'books/'));
-      }catch(e){
-        console.warn('fixBase hata:', e);
-      }
+      }catch(e){ console.warn('fixBase hata:', e); }
     })();
   </script>
 </body>
