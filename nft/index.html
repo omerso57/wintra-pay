@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
+  <!-- TEMA BOOTSTRAP -->
   <script>
     (function(){
       var s = localStorage.getItem('wintra_theme');
@@ -17,91 +18,112 @@
   <style>
     :root{
       --bg:#000; --text:#e6f5ff; --mut:#a8cbbd;
-      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);  /* WTR markası (ana sayfa) */
+      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);   /* WTR ana sayfa gradyanı */
       --gold:#FFD700; --purple:#B500FF;
-      --star:#fff; --star-glow:rgba(220,238,255,1);
-      --card-bg:rgba(255,255,255,.04);
-      --card-border:rgba(255,255,255,.14);
-      --chip-border:rgba(255,255,255,.25);
+      --star:#ffffff; --star-glow:rgba(220,238,255,1);
+      --card-bg:rgba(255,255,255,.05);
+      --card-bd:rgba(255,255,255,.10);
+      --chip-bd:rgba(255,255,255,.28);
     }
     html.theme-light{
       --bg:#f2f6ff; --text:#0b1220; --mut:#405061;
-      --star:#000; --star-glow:rgba(0,0,0,.95);          /* simsiyah yıldız */
-      --card-bg:#fbfdff;                                 /* kırık beyaz */
-      --card-border:rgba(0,0,0,.18);                     /* koyulaştırıldı */
-      --chip-border:rgba(0,0,0,.28);
+      --star:#000000; --star-glow:rgba(0,0,0,1);               /* açık temada simsiyah yıldız */
+      --card-bg:#fbfdff;                                       /* kırık beyaz */
+      --card-bd:rgba(0,0,0,.24);                               /* daha koyu kenarlık */
+      --chip-bd:rgba(0,0,0,.32);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0;background:var(--bg);color:var(--text);
-         font:500 15px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
+    body{
+      margin:0; background:var(--bg); color:var(--text);
+      font:500 15px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    }
 
-    header{max-width:1200px;margin:22px auto 6px;padding:0 16px;
-           display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
-    h1{margin:0;font-size:clamp(26px,4.6vw,40px)}
+    header{
+      max-width:1200px; margin:22px auto 6px; padding:0 16px;
+      display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center;
+    }
+    h1{margin:0; font-size:clamp(26px,4.6vw,40px)}
     .sub,.note{color:var(--mut)}
-    .note{max-width:1200px;margin:6px auto 16px;padding:0 16px}
+    .note{max-width:1200px; margin:6px auto 10px; padding:0 16px}
 
-    .btn{border:1px solid var(--card-border);background:rgba(255,255,255,.06);
-         color:var(--text);border-radius:12px;padding:10px 12px;font-weight:700;cursor:pointer}
-    html.theme-light .btn{background:rgba(0,0,0,.06)}
-    .btn-cta{background:var(--grad);border:0;color:#001a1a;box-shadow:0 6px 16px rgba(111,240,195,.25)}
-
-    .grid{
-      max-width:1200px;margin:8px auto 60px;padding:0 16px;
-      display:grid;gap:14px;
-      grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      justify-items:center;align-items:start
+    /* BUTONLAR (özgüllük artırıldı) */
+    .actions .btn, .toolbar .btn, .btn{
+      border-radius:12px; padding:10px 12px; font-weight:700; cursor:pointer;
+      border:1px solid var(--card-bd) !important;
+      background:rgba(255,255,255,.06) !important; color:var(--text) !important;
     }
-    .card{
-      width:220px;border-radius:16px;overflow:hidden;
-      background:var(--card-bg);border:1px solid var(--card-border);
-      box-shadow:0 8px 24px rgba(0,0,0,.30);
-      display:flex;flex-direction:column
+    html.theme-light .actions .btn, html.theme-light .btn{
+      background:rgba(0,0,0,.06) !important;
     }
-    html.theme-light .card{box-shadow:0 8px 18px rgba(0,0,0,.08)}
 
-    .thumb{width:200px;aspect-ratio:3/4;margin:14px auto 0;border-radius:12px;
-           overflow:hidden;background:#0c1a2b;position:relative}
-    .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-    .legendary .thumb{box-shadow:0 0 0 3px var(--gold)}
-    .rare .thumb{box-shadow:0 0 0 3px var(--purple)}
-
-    .chip{position:absolute;left:10px;top:10px;padding:6px 10px;border-radius:999px;
-          font-size:12px;border:1px solid var(--chip-border)}
-    .chip.Legendary{background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700);color:#000}
-    .chip.Rare{background:linear-gradient(90deg,#b500ff,#e37fff);color:#fff}
-
-    .info{padding:12px 14px 0;display:grid;gap:8px}
-    .title{font-weight:800;font-size:18px}
-    .row{display:flex;justify-content:space-between;align-items:center}
-    .left{color:var(--mut);font-size:14px}
-
-    .actions-row{display:flex;gap:8px;padding:12px 14px 14px;margin-top:auto}
-    /* WTR markalı satın al butonu: ana sayfa gradyanı + siyah yazı */
+    /* WTR CTA — ana sayfa gradyanı + siyah yazı + gölge */
     .btn-primary{
-      background:var(--grad);
-      border:0;color:#001a1a;
-      box-shadow:0 8px 22px rgba(111,240,195,.28), 0 0 0 1px rgba(255,255,255,.12) inset
+      background:var(--grad) !important; border:0 !important;
+      color:#001a1a !important;
+      box-shadow:0 8px 22px rgba(111,240,195,.28), 0 0 0 1px rgba(255,255,255,.12) inset !important;
     }
 
-    .stars{position:fixed;inset:0;pointer-events:none;z-index:-1}
-    .stars canvas{width:100%;height:100%;display:block;opacity:.96}
-    html.theme-light .stars canvas{opacity:.88}
+    /* GRID — NFT’leri hizala, boşlukları kıs */
+    .grid{
+      max-width:1200px; margin:6px auto 50px; padding:0 16px;
+      display:grid; gap:10px;
+      grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+      justify-items:center; align-items:start;
+    }
+
+    /* KART — dikdörtgen, küçük ve okunaklı */
+    .card{
+      width:240px; border-radius:16px; overflow:hidden;
+      background:var(--card-bg); border:1px solid var(--card-bd);
+      box-shadow:0 8px 24px rgba(0,0,0,.30);
+      display:flex; flex-direction:column;
+    }
+    html.theme-light .card{ box-shadow:0 8px 18px rgba(0,0,0,.08) }
+
+    .thumb{
+      width:220px; aspect-ratio:3/4; margin:12px auto 0; border-radius:12px;
+      overflow:hidden; background:#0c1a2b; position:relative;
+    }
+    .thumb img{ width:100%; height:100%; object-fit:cover; display:block }
+
+    /* Sınıf çerçevesi */
+    .legendary .thumb{ box-shadow:0 0 0 3px var(--gold) }
+    .rare .thumb{ box-shadow:0 0 0 3px var(--purple) }
+
+    /* RARITY CHIP */
+    .chip{
+      position:absolute; left:10px; top:10px; padding:6px 10px; border-radius:999px;
+      font-size:12px; border:1px solid var(--chip-bd);
+    }
+    .chip.Legendary{ background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700); color:#000 }
+    .chip.Rare{ background:linear-gradient(90deg,#b500ff,#e37fff); color:#fff }
+
+    .info{ padding:12px 14px 0; display:grid; gap:8px }
+    .title{ font-weight:800; font-size:18px }
+    .row{ display:flex; justify-content:space-between; align-items:center }
+    .left{ color:var(--mut); font-size:14px }
+
+    .actions{ display:flex; gap:8px; padding:12px 14px 14px; margin-top:auto }
+
+    /* YILDIZLAR */
+    .stars{ position:fixed; inset:0; pointer-events:none; z-index:-1 }
+    .stars canvas{ width:100%; height:100%; display:block; opacity:.98 }
+    html.theme-light .stars canvas{ opacity:.92 } /* açık temada siyahlar belirgin */
   </style>
 </head>
 <body>
   <div class="stars"><canvas id="space"></canvas></div>
 
-  <header>
+  <header class="toolbar">
     <div>
       <h1>NFT Store <span style="opacity:.6;font-size:14px">v1</span></h1>
       <p class="sub">Wintra’nın ilk koleksiyonu: Data Askeri, Gölge ve CyberCity.</p>
     </div>
     <div>
       <button id="themeToggle" class="btn">🌓 Tema</button>
-      <a href="../" class="btn btn-cta">← Ana sayfa</a>
+      <a href="../" class="btn btn-primary">← Ana sayfa</a>
     </div>
   </header>
 
@@ -110,14 +132,12 @@
   <section id="grid" class="grid"></section>
 
   <script>
-    (function(){
-      const btn=document.getElementById('themeToggle');
-      btn.addEventListener('click',()=>{
-        const html=document.documentElement;
-        const light=html.classList.toggle('theme-light');
-        localStorage.setItem('wintra_theme', light?'light':'dark');
-      });
-    })();
+    /* Tema toggle: doğrudan <html> üzerine yaz */
+    document.getElementById('themeToggle').addEventListener('click', ()=>{
+      const html=document.documentElement;
+      const light=html.classList.toggle('theme-light');
+      localStorage.setItem('wintra_theme', light?'light':'dark');
+    });
 
     const DEMO=true;
     const NFTS=[
@@ -144,7 +164,7 @@
             <div class="left">Kalan: ${left}/${n.supply}</div>
           </div>
         </div>
-        <div class="actions-row">
+        <div class="actions">
           <button class="btn" data-details="${n.id}">Detay</button>
           <button class="btn btn-primary" data-buy="${n.id}">WTR ile Satın Al</button>
         </div>`;
@@ -158,27 +178,35 @@
     grid.addEventListener('click',(e)=>{
       const det=e.target.closest('[data-details]')?.getAttribute('data-details');
       const buy=e.target.closest('[data-buy]')?.getAttribute('data-buy');
-      if(det!=null){ const n=NFTS.find(x=>String(x.id)===det); alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`); }
-      if(buy!=null){ const n=NFTS.find(x=>String(x.id)===buy); if(DEMO) location.href=`../pay/index.html?nft=${n.id}&qty=1&demo=1`; }
+      if(det!=null){
+        const n=NFTS.find(x=>String(x.id)===det);
+        alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`);
+      }
+      if(buy!=null){
+        const n=NFTS.find(x=>String(x.id)===buy);
+        if(DEMO) location.href=`../pay/index.html?nft=${n.id}&qty=1&demo=1`;
+      }
     });
 
+    /* Yıldız alanı — siyah/beyaz + parlak glow, %20 daha hızlı */
     (function stars(){
       const c=document.getElementById('space'),x=c.getContext('2d'); let stars=[],w=0,h=0;
       function resize(){
         const dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
         w=c.width=Math.floor(innerWidth*dpr); h=c.height=Math.floor(innerHeight*dpr);
-        c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px'; x.setTransform(dpr,0,0,dpr,0,0);
+        c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px';
+        x.setTransform(dpr,0,0,dpr,0,0);
         const count=Math.round((innerWidth*innerHeight)/3200);
-        stars=Array.from({length:count},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1.1+Math.random()*1.6,z:.55+Math.random()*1.6}));
+        stars=Array.from({length:count},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1+Math.random()*1.8,z:.6+Math.random()*1.6}));
       }
-      function col(){ const cs=getComputedStyle(document.documentElement); return {c:cs.getPropertyValue('--star').trim(), g:cs.getPropertyValue('--star-glow').trim()}; }
+      function col(){ const s=getComputedStyle(document.documentElement); return {c:s.getPropertyValue('--star').trim(),g:s.getPropertyValue('--star-glow').trim()}; }
       function tick(){
         const {c:color,g:glow}=col();
         x.clearRect(0,0,innerWidth,innerHeight);
         for(const s of stars){
           x.beginPath(); x.arc(s.x,s.y,s.r,0,Math.PI*2);
-          x.fillStyle=color; x.shadowColor=glow; x.shadowBlur=13*s.z; x.fill(); x.shadowBlur=0;
-          s.x-=0.18*s.z; s.y+=0.09*s.z;
+          x.fillStyle=color; x.shadowColor=glow; x.shadowBlur=14*s.z; x.fill(); x.shadowBlur=0;
+          s.x-=0.192*s.z; s.y+=0.096*s.z;
           if(s.x<-3) s.x=innerWidth+3; if(s.y>innerHeight+3) s.y=-3;
         }
         requestAnimationFrame(tick);
