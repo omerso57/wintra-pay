@@ -18,34 +18,33 @@
   <title>Wintra — NFT Store</title>
   <link rel="icon" href="../assets/wtr.png" />
   <style>
-    /* ===== Temel değişkenler ===== */
     :root{
       --bg-dark:#000; --text-dark:#e6f5ff; --mut-dark:#a8cbbd;
       --bg-light:#f2f6ff; --text-light:#0b1220; --mut-light:#3a4756;
       --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);
       --gold:#FFD700; --purple:#B500FF;
-      --star-color:#fff; /* koyu temada beyaz */
+      --star:#fff; --glow:rgba(210,235,255,.95);
     }
-    .theme-light{ --star-color:#000; } /* açık temada siyah */
+    .theme-light{
+      --star:#000; --glow:rgba(0,0,0,.8);
+    }
 
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{
-      margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background:var(--bg-dark); color:var(--text-dark);
-    }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      background:var(--bg-dark); color:var(--text-dark);}
     .theme-light body, body.theme-light{ background:var(--bg-light); color:var(--text-light); }
 
-    /* Üst kısım */
     header{
-      max-width:1100px; margin:18px auto 8px; padding:0 16px;
+      max-width:1200px; margin:20px auto 8px; padding:0 16px;
       display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center;
     }
     h1{font-size:clamp(26px,4.6vw,40px); margin:0}
     .sub{margin:6px 0 0; color:var(--mut-dark)}
     body.theme-light .sub{ color:var(--mut-light); }
-    .note{ max-width:1100px; margin:0 auto 10px; padding:0 16px; color:var(--mut-dark) }
+    .note{ max-width:1200px; margin:0 auto 14px; padding:0 16px; color:var(--mut-dark) }
     body.theme-light .note{ color:var(--mut-light); }
+
     .actions{ display:flex; gap:10px; align-items:center; }
     .btn{
       border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06);
@@ -56,25 +55,28 @@
     }
     .btn-cta{ background:var(--grad); color:#001a1a; border:0; box-shadow:0 6px 16px rgba(111,240,195,.25) }
 
-    /* Grid & Kart */
+    /* ---- Grid hizalama ---- */
     .grid{
-      max-width:1100px; margin:8px auto 40px; padding:0 16px;
-      display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-      gap:14px; justify-items:center;
+      max-width:1200px; margin:8px auto 60px; padding:0 16px;
+      display:grid; gap:22px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      justify-items:center; align-items:stretch;
     }
+
+    /* ---- Kart ---- */
     .card{
-      width:220px; border-radius:16px; overflow:hidden;
+      width:240px; border-radius:16px; overflow:hidden;
       background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.14);
       box-shadow:0 8px 24px rgba(0,0,0,.30);
-      display:flex; flex-direction:column;
+      display:flex; flex-direction:column; min-height:480px;
     }
     body.theme-light .card{
       background:#fff; border:1px solid rgba(0,0,0,.08); box-shadow:0 8px 18px rgba(0,0,0,.08);
     }
-    .thumb{ width:200px; aspect-ratio:1/1; margin:12px auto 0; border-radius:12px; overflow:hidden; background:#0c1a2b; }
+    .thumb{ width:210px; aspect-ratio:1/1; margin:14px auto 0; border-radius:12px; overflow:hidden; background:#0c1a2b; position:relative;}
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
 
-    /* Efsane/Rare çerçevesi: sade */
+    /* sade çerçeve */
     .legendary .thumb{ box-shadow:0 0 0 3px var(--gold); }
     .rare .thumb{ box-shadow:0 0 0 3px var(--purple); }
 
@@ -85,26 +87,21 @@
     .chip.Legendary{ background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700); color:#000; }
     .chip.Rare{ background:linear-gradient(90deg,#b500ff,#e37fff); color:#fff; }
 
-    .info{ padding:10px 12px 0; display:grid; gap:8px }
+    .info{ padding:12px 14px 0; display:grid; gap:8px; }
     .title{ font-weight:800; font-size:18px }
     .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
     .price{ font-weight:800 }
     .left{ color:#a8cbbd; font-size:14px }
     body.theme-light .left{ color:#506173; }
 
-    .actions-row{ display:flex; gap:8px; padding:12px; padding-top:8px; }
+    .spacer{ flex:1 1 auto; } /* boşluk */
+    .actions-row{ display:flex; gap:8px; padding:12px 14px 14px; margin-top:auto; }
     .btn-primary{ background:var(--grad); color:#001a1a; border:0; box-shadow:0 6px 16px rgba(111,240,195,.25) }
 
     /* Yıldız katmanı */
     .stars{ position:fixed; inset:0; pointer-events:none; z-index:-1; }
-    .stars canvas{ width:100%; height:100%; display:block; opacity:.50; }
-    body.theme-light .stars canvas{ opacity:.22; }
-  </style>
-
-  <!-- NFT özel düzeltmeleri (metin/renk/stars) -->
-  <style id="nft-fixes">
-    body{ background:#000; }              /* koyu tema varsayılan: saf #000 */
-    body.theme-light{ background:#f2f6ff; } /* açık tema: açık gri-mavi */
+    .stars canvas{ width:100%; height:100%; display:block; opacity:.65; }
+    body.theme-light .stars canvas{ opacity:.35; }
   </style>
 </head>
 <body>
@@ -127,20 +124,18 @@
   <section class="grid" id="grid"></section>
 
   <script>
-    /* ===== Tema düğmesi ===== */
+    /* Tema düğmesi */
     (function(){
       const btn = document.getElementById('themeToggle');
       btn.addEventListener('click', ()=>{
         const light = document.body.classList.toggle('theme-light');
         localStorage.setItem('wintra_theme', light ? 'light' : 'dark');
       });
-      // Bootstrap'te html'e ekledik; body'e de senkronla
       if (document.documentElement.classList.contains('theme-light')) {
         document.body.classList.add('theme-light');
       }
     })();
 
-    /* ===== Veri ===== */
     const DEMO = true;
     const NFTS = [
       { id:0, name:"Data Askeri", class:"Legendary", priceWTR:10000, supply:20, minted:0, image:"../assets/nft/data-askeri" },
@@ -148,16 +143,13 @@
       { id:2, name:"CyberCity",   class:"Legendary", priceWTR:25000, supply:10, minted:0, image:"../assets/nft/cybercity" }
     ];
     const EXTS = [".webp",".jpg",".jpeg",".png"];
-
-    /* ===== Render ===== */
     const grid = document.getElementById('grid');
 
     for (const n of NFTS) {
       const left = Math.max(n.supply - n.minted, 0);
-      const shell = document.createElement('article');
-      shell.className = "card " + (n.class.toLowerCase()==='legendary'?'legendary':'rare');
-
-      shell.innerHTML = `
+      const el = document.createElement('article');
+      el.className = "card " + (n.class.toLowerCase()==='legendary'?'legendary':'rare');
+      el.innerHTML = `
         <div class="thumb">
           <img data-base="${n.image}" alt="${n.name}">
           <div class="chip ${n.class}">${n.class}</div>
@@ -169,15 +161,14 @@
             <div class="left">Kalan: ${left}/${n.supply}</div>
           </div>
         </div>
+        <div class="spacer"></div>
         <div class="actions-row">
           <button class="btn" data-details="${n.id}">Detay</button>
           <button class="btn btn-primary" data-buy="${n.id}">WTR ile Satın Al</button>
-        </div>
-      `;
-      grid.appendChild(shell);
+        </div>`;
+      grid.appendChild(el);
 
-      // akıllı görsel yükleme
-      const img = shell.querySelector('img');
+      const img = el.querySelector('img');
       let i = 0;
       img.onerror = () => {
         if (i < EXTS.length) img.src = img.dataset.base + EXTS[i++];
@@ -195,7 +186,7 @@
           );
         }
       };
-      img.src = img.dataset.base + EXTS[i++]; // ilk deneme
+      img.src = img.dataset.base + EXTS[i++];
     }
 
     grid.addEventListener('click', (e)=>{
@@ -212,39 +203,54 @@
       }
     });
 
-    /* ===== Tema-duyarlı yıldızlar (hız +%20) ===== */
+    /* Yıldızlar — daha parlak beyaz (koyu) / simsiyah (açık) + glow */
     (function stars(){
       const c = document.getElementById('space'); if(!c) return;
       const ctx = c.getContext('2d');
-      let stars = [];
-      function resize(){ c.width = innerWidth; c.height = innerHeight; }
-      function init(n=140){
-        stars = Array.from({length:n}, ()=>({
-          x: Math.random()*c.width,
-          y: Math.random()*c.height,
-          z: 0.25 + Math.random()*1.35
+      let stars = [], w=0, h=0;
+
+      function resize() {
+        const dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+        w = c.width = Math.floor(innerWidth * dpr);
+        h = c.height = Math.floor(innerHeight * dpr);
+        c.style.width = innerWidth + 'px';
+        c.style.height = innerHeight + 'px';
+        ctx.setTransform(dpr,0,0,dpr,0,0);
+        const density = Math.round((innerWidth*innerHeight)/3800); // biraz daha yoğun
+        stars = Array.from({length:density}, () => ({
+          x: Math.random()*innerWidth,
+          y: Math.random()*innerHeight,
+          r: 1.2 + Math.random()*1.6,  // daha büyük
+          z: .35 + Math.random()*1.4   // hız
         }));
       }
-      function starColor(){
-        const css = getComputedStyle(document.body);
-        return css.getPropertyValue('--star-color').trim() || (document.body.classList.contains('theme-light') ? '#000' : '#fff');
-      }
-      function draw(){
-        ctx.clearRect(0,0,c.width,c.height);
-        const col = starColor();
-        for(const s of stars){
-          ctx.globalAlpha = 0.65 * s.z;
+
+      function draw() {
+        ctx.clearRect(0,0,innerWidth,innerHeight);
+        const col = getComputedStyle(document.documentElement).getPropertyValue('--star').trim() || '#fff';
+        const glow = getComputedStyle(document.documentElement).getPropertyValue('--glow').trim() || 'rgba(210,235,255,.9)';
+        for (const s of stars) {
+          ctx.beginPath();
+          ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
           ctx.fillStyle = col;
-          ctx.fillRect(s.x, s.y, 2, 2);
-          s.x += 0.12 * s.z;            // önceki versiyondan ~%20 daha hızlı
-          if(s.x > c.width){ s.x = -2; s.y = Math.random()*c.height; }
+          ctx.shadowColor = glow;
+          ctx.shadowBlur = 10 * s.z;    // glow
+          ctx.fill();
+          ctx.shadowBlur = 0;
+
+          // diagonal kayış (biraz daha hızlı)
+          s.x -= 0.16 * s.z;
+          s.y += 0.08 * s.z;
+          if (s.x < -3) s.x = innerWidth + 3;
+          if (s.y > innerHeight + 3) s.y = -3;
         }
         requestAnimationFrame(draw);
       }
-      resize(); init(); draw();
-      addEventListener('resize', ()=>{ resize(); init(stars.length); });
-      // tema değişince anında renk güncelle
-      new MutationObserver(draw).observe(document.body, {attributes:true, attributeFilter:['class']});
+
+      resize(); draw();
+      addEventListener('resize', resize, {passive:true});
+      // tema değişince rengin anında yansıması için redraw tetikle
+      new MutationObserver(()=>{}).observe(document.body, {attributes:true, attributeFilter:['class']});
     })();
   </script>
 </body>
