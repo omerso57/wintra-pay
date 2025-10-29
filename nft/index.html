@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <!-- THEME BOOTSTRAP (CSS'ten önce) -->
   <script>
     (function(){
       var s = localStorage.getItem('wintra_theme');
@@ -16,33 +15,21 @@
   <link rel="icon" href="../assets/wtr.png"/>
 
   <style>
-    /* ====== TEMEL DEĞİŞKENLER ====== */
     :root{
       --bg:#000; --text:#e6f5ff; --mut:#a8cbbd;
-      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);
+      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);  /* WTR markası (ana sayfa) */
       --gold:#FFD700; --purple:#B500FF;
-
-      /* yıldız (koyu) */
-      --star:#fff;        /* beyaz nokta */
-      --star-glow:rgba(220,238,255,1); /* güçlü beyaz halo */
-
+      --star:#fff; --star-glow:rgba(220,238,255,1);
       --card-bg:rgba(255,255,255,.04);
       --card-border:rgba(255,255,255,.14);
       --chip-border:rgba(255,255,255,.25);
-
-      --cta1:#B500FF;   /* mor butonumuz */
-      --cta2:#9E5CFF;
     }
     html.theme-light{
       --bg:#f2f6ff; --text:#0b1220; --mut:#405061;
-
-      /* yıldız (açık) — simsiyah */
-      --star:#000;
-      --star-glow:rgba(0,0,0,.95); /* siyah halo */
-
-      --card-bg:#ffffff;
-      --card-border:rgba(0,0,0,.12);
-      --chip-border:rgba(0,0,0,.25);
+      --star:#000; --star-glow:rgba(0,0,0,.95);          /* simsiyah yıldız */
+      --card-bg:#fbfdff;                                 /* kırık beyaz */
+      --card-border:rgba(0,0,0,.18);                     /* koyulaştırıldı */
+      --chip-border:rgba(0,0,0,.28);
     }
 
     *{box-sizing:border-box}
@@ -50,7 +37,6 @@
     body{margin:0;background:var(--bg);color:var(--text);
          font:500 15px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial}
 
-    /* ====== BAŞLIK ====== */
     header{max-width:1200px;margin:22px auto 6px;padding:0 16px;
            display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
     h1{margin:0;font-size:clamp(26px,4.6vw,40px)}
@@ -62,7 +48,6 @@
     html.theme-light .btn{background:rgba(0,0,0,.06)}
     .btn-cta{background:var(--grad);border:0;color:#001a1a;box-shadow:0 6px 16px rgba(111,240,195,.25)}
 
-    /* ====== GRID & KART ====== */
     .grid{
       max-width:1200px;margin:8px auto 60px;padding:0 16px;
       display:grid;gap:14px;
@@ -70,26 +55,21 @@
       justify-items:center;align-items:start
     }
     .card{
-      width:220px; border-radius:16px; overflow:hidden;
-      background:var(--card-bg); border:1px solid var(--card-border);
+      width:220px;border-radius:16px;overflow:hidden;
+      background:var(--card-bg);border:1px solid var(--card-border);
       box-shadow:0 8px 24px rgba(0,0,0,.30);
-      display:flex; flex-direction:column; min-height:auto;
+      display:flex;flex-direction:column
     }
     html.theme-light .card{box-shadow:0 8px 18px rgba(0,0,0,.08)}
 
-    /* dikdörtgen THUMB (3/4) + sade kenarlık */
-    .thumb{
-      width:200px; aspect-ratio:3/4; margin:14px auto 0;
-      border-radius:12px; overflow:hidden; background:#0c1a2b; position:relative
-    }
+    .thumb{width:200px;aspect-ratio:3/4;margin:14px auto 0;border-radius:12px;
+           overflow:hidden;background:#0c1a2b;position:relative}
     .thumb img{width:100%;height:100%;object-fit:cover;display:block}
     .legendary .thumb{box-shadow:0 0 0 3px var(--gold)}
     .rare .thumb{box-shadow:0 0 0 3px var(--purple)}
 
-    .chip{
-      position:absolute;left:10px;top:10px;padding:6px 10px;border-radius:999px;font-size:12px;
-      border:1px solid var(--chip-border)
-    }
+    .chip{position:absolute;left:10px;top:10px;padding:6px 10px;border-radius:999px;
+          font-size:12px;border:1px solid var(--chip-border)}
     .chip.Legendary{background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700);color:#000}
     .chip.Rare{background:linear-gradient(90deg,#b500ff,#e37fff);color:#fff}
 
@@ -98,19 +78,17 @@
     .row{display:flex;justify-content:space-between;align-items:center}
     .left{color:var(--mut);font-size:14px}
 
-    .actions-row{
-      display:flex;gap:8px;padding:12px 14px 14px;margin-top:auto
-    }
+    .actions-row{display:flex;gap:8px;padding:12px 14px 14px;margin-top:auto}
+    /* WTR markalı satın al butonu: ana sayfa gradyanı + siyah yazı */
     .btn-primary{
-      background:linear-gradient(90deg,var(--cta1),var(--cta2));
-      border:0;color:#fff;box-shadow:0 6px 16px rgba(181,0,255,.28)
+      background:var(--grad);
+      border:0;color:#001a1a;
+      box-shadow:0 8px 22px rgba(111,240,195,.28), 0 0 0 1px rgba(255,255,255,.12) inset
     }
 
-    /* ====== YILDIZ KATMANI ====== */
     .stars{position:fixed;inset:0;pointer-events:none;z-index:-1}
     .stars canvas{width:100%;height:100%;display:block;opacity:.96}
-    html.theme-light .stars canvas{opacity:.85} /* açık temada belirgin ama rahatsız etmeyen */
-
+    html.theme-light .stars canvas{opacity:.88}
   </style>
 </head>
 <body>
@@ -132,7 +110,6 @@
   <section id="grid" class="grid"></section>
 
   <script>
-    /* Tema anahtarı */
     (function(){
       const btn=document.getElementById('themeToggle');
       btn.addEventListener('click',()=>{
@@ -142,7 +119,6 @@
       });
     })();
 
-    /* Veri + grid render */
     const DEMO=true;
     const NFTS=[
       {id:0,name:"Data Askeri",class:"Legendary",priceWTR:10000,supply:20,minted:0,image:"../assets/nft/data-askeri"},
@@ -186,29 +162,22 @@
       if(buy!=null){ const n=NFTS.find(x=>String(x.id)===buy); if(DEMO) location.href=`../pay/index.html?nft=${n.id}&qty=1&demo=1`; }
     });
 
-    /* ====== YILDIZLAR ======
-       koyu: çok beyaz + güçlü glow
-       açık: simsiyah + siyah glow
-    */
     (function stars(){
       const c=document.getElementById('space'),x=c.getContext('2d'); let stars=[],w=0,h=0;
       function resize(){
         const dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
         w=c.width=Math.floor(innerWidth*dpr); h=c.height=Math.floor(innerHeight*dpr);
         c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px'; x.setTransform(dpr,0,0,dpr,0,0);
-        const count=Math.round((innerWidth*innerHeight)/3200);   // yoğunluk ↑
+        const count=Math.round((innerWidth*innerHeight)/3200);
         stars=Array.from({length:count},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1.1+Math.random()*1.6,z:.55+Math.random()*1.6}));
       }
-      function colors(){
-        const cs=getComputedStyle(document.documentElement);
-        return {col:cs.getPropertyValue('--star').trim(), glow:cs.getPropertyValue('--star-glow').trim()};
-      }
+      function col(){ const cs=getComputedStyle(document.documentElement); return {c:cs.getPropertyValue('--star').trim(), g:cs.getPropertyValue('--star-glow').trim()}; }
       function tick(){
-        const {col,glow}=colors();
+        const {c:color,g:glow}=col();
         x.clearRect(0,0,innerWidth,innerHeight);
         for(const s of stars){
           x.beginPath(); x.arc(s.x,s.y,s.r,0,Math.PI*2);
-          x.fillStyle=col; x.shadowColor=glow; x.shadowBlur=13*s.z; x.fill(); x.shadowBlur=0;
+          x.fillStyle=color; x.shadowColor=glow; x.shadowBlur=13*s.z; x.fill(); x.shadowBlur=0;
           s.x-=0.18*s.z; s.y+=0.09*s.z;
           if(s.x<-3) s.x=innerWidth+3; if(s.y>innerHeight+3) s.y=-3;
         }
