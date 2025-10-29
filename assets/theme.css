@@ -1,0 +1,19 @@
+:root{
+  --bg:#000; --text:#eaf5ff;
+  --accent:#7df8d3; --accent-2:#a98cff; --accent-3:#dce6f0;
+  --grad:linear-gradient(90deg,var(--accent),var(--accent-2),var(--accent-3));
+  --border:1px solid rgba(255,255,255,.12);
+  --card-bg:rgba(255,255,255,.03);
+  --card-border:1px solid rgba(255,255,255,.08);
+  --mut:#a9b8c7;
+  --star:#ffffff; /* koyu tema: yıldız beyaz */
+}
+.theme-light{
+  --bg:#e9eef6; --text:#0b1220;
+  --accent:#6feccf; --accent-2:#8c7bff; --accent-3:#6ea0ff;
+  --border:1px solid rgba(0,0,0,.12);
+  --card-bg:rgba(255,255,255,.9);
+  --card-border:1px solid rgba(0,0,0,.06);
+  --mut:#5a6a7a;
+  --star:#000000; /* açık tema: yıldız siyah */
+}
