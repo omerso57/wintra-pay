@@ -207,6 +207,45 @@
     });
 
     /* Yıldız alanı — koyu temada parlak beyaz, açık temada simsiyah */
+    /* ==== LIGHT THEME: tüm kart yarı saydam siyah ==== */
+html.theme-light .card{
+  background: rgba(0,0,0,.78);            /* saydam siyah */
+  border-color: rgba(255,255,255,.08);
+  color: #eaf5ff;
+}
+
+/* Kart içindeki metinler */
+html.theme-light .card .title{ color:#ffffff; }
+html.theme-light .card .row  { color:#eaf5ff; }
+html.theme-light .card .left { color:#b9cce0; }
+
+/* Alt bilgi ve buton satırı: kartla aynı (transparan) kalsın */
+html.theme-light .card .info,
+html.theme-light .card .actions-row{
+  background: transparent;
+}
+
+/* Butonlar (Detay vb.) açık temada koyu kart üzerinde okunur olsun */
+html.theme-light .card .btn{
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.24);
+  color: #eaf5ff;
+}
+html.theme-light .card .btn:hover{
+  background: rgba(255,255,255,.16);
+}
+
+/* WTR ile Satın Al: marka gradyanı + koyu kartta da okunaklı */
+html.theme-light .card .btn-primary{
+  background: var(--grad);
+  color: #001a1a;
+  border: 0;
+}
+
+/* Görsel kenarına ikinci siyah halka kalsın (kontrast için) */
+.legendary .thumb{ box-shadow:0 0 0 3px var(--gold), 0 0 0 6px #000; }
+.rare      .thumb{ box-shadow:0 0 0 3px var(--purple), 0 0 0 6px #000; }
+
     (function stars(){
       const c = document.getElementById('space'), x = c.getContext('2d'); let stars=[], w=0, h=0;
       function resize(){
