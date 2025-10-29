@@ -2,16 +2,17 @@
 <html lang="tr">
 <head>
   <!-- THEME BOOTSTRAP (en üste, CSS'ten önce) -->
-<script>
-  (function () {
-    var saved = localStorage.getItem('wintra_theme');
-    if (!saved) {
-      try { saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
-      catch(e) { saved = 'dark'; }
-    }
-    if (saved === 'light') document.documentElement.classList.add('theme-light');
-  })();
-</script>
+  <script>
+    (function () {
+      var saved = localStorage.getItem('wintra_theme');
+      if (!saved) {
+        try { saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+        catch(e) { saved = 'dark'; }
+      }
+      if (saved === 'light') document.documentElement.classList.add('theme-light');
+      else document.documentElement.classList.remove('theme-light');
+    })();
+  </script>
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -29,9 +30,8 @@
       --card-bg:rgba(255,255,255,.03);
       --card-border:1px solid rgba(255,255,255,.08);
       --mut:#a9b8c7;
-      --star:#ffffff; /* fixed + canvas stars color (dark theme) */
+      --star:#ffffff; /* fixed stars (dark) */
     }
-    /* Light theme overrides */
     .theme-light{
       --bg:#e9eef6; --text:#0b1220;
       --accent:#6feccf; --accent-2:#8c7bff; --accent-3:#6ea0ff;
@@ -40,7 +40,7 @@
       --card-bg:rgba(255,255,255,.9);
       --card-border:1px solid rgba(0,0,0,.06);
       --mut:#5a6a7a;
-      --star:#000000; /* ⭐ in light theme = black for contrast */
+      --star:#000000; /* fixed stars (light) */
     }
 
     /* ========================
@@ -254,23 +254,24 @@
   </section>
 
   <script>
-    // --- Theme bootstrap ---
+    // --- Theme init/toggle (HER ZAMAN <html> üzerinde) ---
     (function themeInit(){
       const saved = localStorage.getItem('wintra_theme');
       const prefersLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
-      const isLight = saved ? saved === 'light' : prefersLight ? true : false;
-      document.body.classList.toggle('theme-light', isLight);
+      const isLight = saved ? saved === 'light' : !!prefersLight;
+      document.documentElement.classList.toggle('theme-light', isLight);
     })();
 
     document.getElementById('themeToggle')?.addEventListener('click', ()=>{
-      const isLight = document.body.classList.toggle('theme-light');
+      const isLight = !document.documentElement.classList.contains('theme-light');
+      document.documentElement.classList.toggle('theme-light', isLight);
       localStorage.setItem('wintra_theme', isLight ? 'light' : 'dark');
     });
 
     // Placeholder wallet
     document.getElementById('connectBtn')?.addEventListener('click', () => alert('Cüzdan bağlama fonksiyonunu buraya ekle'));
 
-    // ⭐ FIXED STARS (DOM dots) — color reacts to theme via CSS var
+    // ⭐ FIXED STARS (DOM dots) — color via CSS var
     (function makeStars(){
       const stars = document.getElementById('stars'); if(!stars) return;
       const total = 240;
@@ -279,7 +280,7 @@
         const size = Math.random() < 0.85 ? (1 + Math.random()*1.2) : (1.6 + Math.random()*1.2);
         Object.assign(s.style,{
           position:'absolute',width:size+'px',height:size+'px',borderRadius:'50%',
-          background:'var(--star)', /* theme aware */
+          background:'var(--star)',
           opacity:(0.3 + Math.random()*0.7).toFixed(2), left:(Math.random()*100)+'%', top:(Math.random()*100)+'%'
         });
         stars.appendChild(s);
@@ -303,7 +304,6 @@
         canvas.style.width = innerWidth + 'px';
         canvas.style.height = innerHeight + 'px';
         ctx.setTransform(dpr,0,0,dpr,0,0);
-        // yoğunluk
         const count = Math.round((innerWidth * innerHeight) / 4200);
         stars = Array.from({length:count}, () => ({
           x: Math.random()*innerWidth,
@@ -315,7 +315,7 @@
 
       function step(){
         ctx.clearRect(0,0,innerWidth,innerHeight);
-        const light = document.body.classList.contains('theme-light');
+        const light = document.documentElement.classList.contains('theme-light'); // <— fix
         const color = light ? 'rgba(0,0,0,0.9)' : 'rgba(255,255,255,0.9)';
         const glow  = light ? 'rgba(0,0,0,0.6)' : 'rgba(180,220,255,0.8)';
         for(const s of stars){
@@ -325,8 +325,8 @@
           ctx.shadowBlur = 8*s.z; ctx.shadowColor = glow;
           ctx.fill();
           // Daha hızlı diyagonal kayma
-          s.x -= 0.192 * s.z;   // önce ~0.16 → %20 artış
-          s.y += 0.084 * s.z;   // önce ~0.07 → %20 artış
+          s.x -= 0.192 * s.z;
+          s.y += 0.084 * s.z;
           if(s.x < -2) s.x = innerWidth + 2;
           if(s.y > innerHeight + 2) s.y = -2;
         }
