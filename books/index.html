@@ -1,114 +1,123 @@
 <!doctype html>
 <html lang="tr">
 <head>
+  <!-- THEME BOOTSTRAP (en üste, CSS'ten önce) -->
   <script>
-  (function(){var s=localStorage.getItem('wintra_theme');
-  if(!s){try{s=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}
-  catch(e){s='dark';}}
-  if(s==='light')document.documentElement.classList.add('theme-light');})();
-</script>
-<link rel="stylesheet" href="../assets/theme.css">
-<script src="../assets/wintra-theme.js"></script>
-  
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Wintra · Kitaplar</title>
-<style>
-:root{
-  --accent1:#78f7ff; --accent2:#d8b6ff; --glow:#bff0ff;
-  --bg:#000; --text:#eafaff; --muted:#9fb4c0;
-  --card:#0b0b0b; --line:#131313; --discount:#2ee08b; --silver:#e6edf5;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{margin:0;background:var(--bg);color:var(--text);
-  font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
-  overflow-x:hidden;}
-#stars{position:fixed;inset:0;z-index:0;background:#000}
+    (function(){
+      var s=localStorage.getItem('wintra_theme');
+      if(!s){ try{s=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}catch(e){s='dark';} }
+      if(s==='light') document.documentElement.classList.add('theme-light');
+    })();
+  </script>
+  <!-- Ortak tema dosyaları -->
+  <link rel="stylesheet" href="../assets/theme.css">
+  <script src="../assets/wintra-theme.js"></script>
 
-/* header */
-header{position:sticky;top:0;z-index:3;background:rgba(0,0,0,.55);backdrop-filter:blur(10px)}
-.top{max-width:1280px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:220px 1fr auto;gap:12px;align-items:center}
-.brand{display:flex;align-items:center;gap:10px;font-weight:800}
-.brand .dot{width:11px;height:11px;border-radius:50%;
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  box-shadow:0 0 16px var(--glow)}
-.badge{padding:6px 10px;border-radius:999px;background:#061015;color:#bff8ff;border:1px solid #09303a;font-weight:800}
-.search{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid #0e0e0e;border-radius:12px;padding:8px 10px}
-.search input{all:unset;width:100%}
-.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-select{background:var(--card);color:var(--text);border:1px solid #0e0e0e;border-radius:10px;padding:9px 10px;font-weight:700}
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wintra · Kitaplar</title>
+  <style>
+  :root{
+    /* 🔹 Tema değişkenlerine (--bg, --text, --card-bg, --card-border, --mut) DOKUNMUYORUZ.
+       Bunları assets/theme.css yönetiyor ki sayfalar arası tema kalıcı olsun. */
+    --accent1:#78f7ff; --accent2:#d8b6ff; --glow:#bff0ff;
+    --muted:#9fb4c0; --discount:#2ee08b; --silver:#e6edf5;
+    /* Bu sayfadaki bazı eski koyu arka planlar için yardımcı değişken: */
+    --card-fallback:#0b0b0b; /* kullanıldığı yerlerde mümkünse var(--card-bg) ile değiştirildi */
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial,"Noto Sans",sans-serif;
+    overflow-x:hidden;}
+  /* ⭐ Canvas arka planını sabit siyah yapmayalım ki açık temada da aydınlık kalsın */
+  #stars{position:fixed;inset:0;z-index:0;background:transparent}
 
-/* chips */
-.cat-chips{position:relative;z-index:1;max-width:1280px;margin:10px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:6px 12px 0}
-.chip{border:1px solid #0e0e0e;background:#0a0a0a;color:#cde5ee;border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700}
+  /* header */
+  header{position:sticky;top:0;z-index:3;background:rgba(0,0,0,.55);backdrop-filter:blur(10px)}
+  .theme-light header{background:rgba(255,255,255,.7)}
+  .top{max-width:1280px;margin:0 auto;padding:12px 16px;display:grid;grid-template-columns:220px 1fr auto;gap:12px;align-items:center}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+  .brand .dot{width:11px;height:11px;border-radius:50%;
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    box-shadow:0 0 16px var(--glow)}
+  .badge{padding:6px 10px;border-radius:999px;background:#061015;color:#bff8ff;border:1px solid #09303a;font-weight:800}
+  .theme-light .badge{background:#e9f7ff;color:#063a46;border-color:#b8ddea}
+  .search{display:flex;align-items:center;gap:10px;background:var(--card-bg);border:var(--card-border);border-radius:12px;padding:8px 10px}
+  .search input{all:unset;width:100%}
+  .controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  select{background:var(--card-bg);color:var(--text);border:var(--card-border);border-radius:10px;padding:9px 10px;font-weight:700}
+  .chip{border:var(--card-border);background:var(--card-bg);color:var(--text);border-radius:999px;padding:8px 12px;cursor:pointer;font-weight:700}
 
-/* içerik */
-main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12px}
-.row{margin:12px 0 26px}
-.row-head{display:flex;align-items:center;justify-content:space-between;margin:0 6px 8px}
-.row-title{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900}
-.row-title .bar{width:6px;height:20px;border-radius:4px;background:linear-gradient(180deg,var(--accent1),var(--accent2));box-shadow:0 0 12px var(--glow)}
-.seeall{color:var(--muted);text-decoration:none;font-weight:800}
+  /* chips */
+  .cat-chips{position:relative;z-index:1;max-width:1280px;margin:10px auto 0;display:flex;gap:10px;flex-wrap:wrap;justify-content:center;padding:6px 12px 0}
 
-/* scroller & kartlar */
-.scroller{display:grid;grid-auto-flow:column;grid-auto-columns:180px;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 4px 6px}
-.scroller::-webkit-scrollbar{height:8px}
-.scroller::-webkit-scrollbar-thumb{background:#141414;border-radius:8px}
-.card{background:var(--card);border:1px solid #101010;border-radius:14px;overflow:hidden;scroll-snap-align:start;transition:transform .18s, box-shadow .18s}
-.card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.45)}
-.cover{width:100%;aspect-ratio:3/4;background:#111 center/cover no-repeat}
-.meta{padding:9px}
+  /* içerik */
+  main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12px}
+  .row{margin:12px 0 26px}
+  .row-head{display:flex;align-items:center;justify-content:space-between;margin:0 6px 8px}
+  .row-title{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:900}
+  .row-title .bar{width:6px;height:20px;border-radius:4px;background:linear-gradient(180deg,var(--accent1),var(--accent2));box-shadow:0 0 12px var(--glow)}
+  .seeall{color:var(--mut);text-decoration:none;font-weight:800}
 
-.ttl{font-weight:900;font-size:14px;line-height:1.2}
-.auth{font-size:12px;color:var(--muted);margin-top:4px}
-.price{display:flex;align-items:center;gap:8px;margin-top:8px}
-.price .num{font-weight:900;font-size:13px}
-.price .discount{color:var(--discount);font-weight:900;font-size:12px}
-.rowbtns{display:flex;gap:6px;margin-top:8px}
-.btn{
-  flex:1;border-radius:11px;border:1px solid rgba(255,255,255,.12);
-  background:linear-gradient(90deg,var(--accent1),var(--accent2));
-  box-shadow:0 0 0 1px rgba(255,255,255,.12) inset, 0 8px 22px rgba(150,210,255,.25);
-  color:#001b2a;font-weight:900;padding:8px 10px;cursor:pointer;text-align:center;font-size:12px}
-.btn.sec{border:1px solid rgba(255,255,255,.18);background:#101018;color:var(--silver)}
-.btn:disabled{opacity:.55;cursor:not-allowed}
-.pill{display:none}
+  /* scroller & kartlar */
+  .scroller{display:grid;grid-auto-flow:column;grid-auto-columns:180px;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 4px 6px}
+  .scroller::-webkit-scrollbar{height:8px}
+  .scroller::-webkit-scrollbar-thumb{background:#141414;border-radius:8px}
+  .card{background:var(--card-bg);border:var(--card-border);border-radius:14px;overflow:hidden;scroll-snap-align:start;transition:transform .18s, box-shadow .18s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 10px 26px rgba(0,0,0,.28)}
+  .cover{width:100%;aspect-ratio:3/4;background:#111 center/cover no-repeat}
+  .meta{padding:9px}
 
-/* Progress bar (sadece sahip olunanlarda) */
-.prog{height:6px;background:#0f1420;border:1px solid #1a2335;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
-.prog>.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(150,210,255,.35)}
+  .ttl{font-weight:900;font-size:14px;line-height:1.2}
+  .auth{font-size:12px;color:var(--mut);margin-top:4px}
+  .price{display:flex;align-items:center;gap:8px;margin-top:8px}
+  .price .num{font-weight:900;font-size:13px}
+  .price .discount{color:var(--discount);font-weight:900;font-size:12px}
+  .rowbtns{display:flex;gap:6px;margin-top:8px}
+  .btn{
+    flex:1;border-radius:11px;border:1px solid rgba(255,255,255,.12);
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    box-shadow:0 0 0 1px rgba(255,255,255,.12) inset, 0 8px 22px rgba(150,210,255,.25);
+    color:#001b2a;font-weight:900;padding:8px 10px;cursor:pointer;text-align:center;font-size:12px}
+  .btn.sec{border:var(--card-border);background:var(--card-bg);color:var(--silver)}
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .pill{display:none}
 
-/* sepet butonu & panel */
-.cartFabWrap{position:fixed;right:16px;bottom:16px;z-index:4}
-.cartFab{padding:12px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.35);color:#002e2e;font-weight:900;border:none;cursor:pointer}
-.bubble{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#1f2a44;color:#cfe8ff;border:1px solid #2a3a66;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:900}
+  /* Progress bar (sadece sahip olunanlarda) */
+  .prog{height:6px;background:#0f1420;border:1px solid #1a2335;border-radius:999px;overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.04)}
+  .prog>.bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 0 14px rgba(150,210,255,.35)}
 
-.drawer{position:fixed;top:0;right:-420px;height:100%;width:420px;max-width:100vw;background:#050505;border-left:1px solid #0f0f0f;z-index:5;transition:right .25s ease;display:flex;flex-direction:column}
-.drawer.open{right:0}
-.dHead{padding:14px 16px;border-bottom:1px solid #0f0f0f;display:flex;justify-content:space-between;align-items:center}
-.dBody{flex:1;overflow:auto;padding:12px}
-.item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;padding:10px;border-bottom:1px solid #0c0c0c}
-.item .ph{width:64px;height:86px;border-radius:10px;background:#111 center/cover no-repeat}
-.qty{display:flex;align-items:center;gap:6px}
-.qty button{width:26px;height:26px;border-radius:8px;border:1px solid #0e0e0e;background:#0b0b0b;color:#cfe3ec;cursor:pointer}
-.qty button:disabled{opacity:.5;cursor:not-allowed}
-.dFoot{border-top:1px solid #0f0f0f;padding:12px}
-.line{display:flex;justify-content:space-between;margin:6px 0}
-.payBtn{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.3);color:#001b1b;font-weight:900;cursor:pointer}
-.infoTiny{font-size:12px;color:#8fb0bd;margin-top:6px}
-.toggle{display:flex;align-items:center;gap:8px;margin-top:10px;background:#0b0b0b;border:1px solid #0f0f0f;border-radius:10px;padding:9px 10px;font-weight:700}
-.toggle input{accent-color:var(--discount);width:18px;height:18px}
+  /* sepet butonu & panel */
+  .cartFabWrap{position:fixed;right:16px;bottom:16px;z-index:4}
+  .cartFab{padding:12px 14px;border-radius:999px;background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.35);color:#002e2e;font-weight:900;border:none;cursor:pointer}
+  .bubble{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#1f2a44;color:#cfe8ff;border:1px solid #2a3a66;font-size:11px;display:flex;align-items:center;justify-content:center;font-weight:900}
 
-/* Reader modal */
-.reader{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;z-index:6;align-items:center;justify-content:center}
-.reader.open{display:flex}
-.reader .panel{width:min(880px,92vw);height:min(80vh,760px);background:#0b0f14;border:1px solid #12202a;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.55);display:flex;flex-direction:column}
-.reader .head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid #12202a}
-.reader .body{flex:1;overflow:auto;padding:14px 16px;line-height:1.6;color:#cfe6f7}
-.reader .close{border-radius:10px;border:1px solid #1b3340;background:#0e171e;color:#cfe6f7;padding:6px 10px;cursor:pointer}
-@media (max-width:740px){.top{grid-template-columns:1fr;gap:8px}}
-</style>
+  .drawer{position:fixed;top:0;right:-420px;height:100%;width:420px;max-width:100vw;background:var(--card-bg);border-left:var(--card-border);z-index:5;transition:right .25s ease;display:flex;flex-direction:column}
+  .drawer.open{right:0}
+  .dHead{padding:14px 16px;border-bottom:var(--card-border);display:flex;justify-content:space-between;align-items:center}
+  .dBody{flex:1;overflow:auto;padding:12px}
+  .item{display:grid;grid-template-columns:64px 1fr auto;gap:10px;padding:10px;border-bottom:var(--card-border)}
+  .item .ph{width:64px;height:86px;border-radius:10px;background:#111 center/cover no-repeat}
+  .qty{display:flex;align-items:center;gap:6px}
+  .qty button{width:26px;height:26px;border-radius:8px;border:var(--card-border);background:var(--card-bg);color:var(--text);cursor:pointer}
+  .qty button:disabled{opacity:.5;cursor:not-allowed}
+  .dFoot{border-top:var(--card-border);padding:12px}
+  .line{display:flex;justify-content:space-between;margin:6px 0}
+  .payBtn{width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(90deg,var(--accent1),var(--accent2));box-shadow:0 8px 26px rgba(150,210,255,.3);color:#001b1b;font-weight:900;cursor:pointer}
+  .infoTiny{font-size:12px;color:#8fb0bd;margin-top:6px}
+  .toggle{display:flex;align-items:center;gap:8px;margin-top:10px;background:var(--card-bg);border:var(--card-border);border-radius:10px;padding:9px 10px;font-weight:700}
+  .toggle input{accent-color:var(--discount);width:18px;height:18px}
+
+  /* Reader modal */
+  .reader{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);display:none;z-index:6;align-items:center;justify-content:center}
+  .reader.open{display:flex}
+  .reader .panel{width:min(880px,92vw);height:min(80vh,760px);background:var(--card-bg);border:var(--card-border);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:flex;flex-direction:column}
+  .reader .head{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:var(--card-border)}
+  .reader .body{flex:1;overflow:auto;padding:14px 16px;line-height:1.6;color:var(--text)}
+  .reader .close{border-radius:10px;border:var(--card-border);background:var(--card-bg);color:var(--text);padding:6px 10px;cursor:pointer}
+  @media (max-width:740px){.top{grid-template-columns:1fr;gap:8px}}
+  </style>
 </head>
 <body>
 <canvas id="stars"></canvas>
@@ -122,6 +131,8 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12p
       <select id="currency">
         <option value="TRY">TL</option><option value="USDT">USDT</option><option value="BNB">BNB</option>
       </select>
+      <!-- 🌓 Bu sayfada da tema değiştir -->
+      <button id="themeToggle" class="chip">🌓 Tema</button>
     </div>
   </div>
 </header>
@@ -229,16 +240,19 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12p
     if(!shoot) return;
     shoot.trail.unshift({x:shoot.x,y:shoot.y,alpha:1});
     shoot.trail=shoot.trail.slice(0,22);
-    const glow='rgba(180,230,255,0.9)';
+    // ⭐ Tema uyumlu parıltı
+    const isLight=document.documentElement.classList.contains('theme-light');
+    const glow=isLight?'rgba(0,0,0,0.8)':'rgba(180,230,255,0.9)';
+    const dot=isLight?'#000':'#fff';
     x.save();
     x.beginPath();x.arc(shoot.x,shoot.y,1.8,0,Math.PI*2);
-    x.fillStyle='white';x.shadowBlur=18;x.shadowColor=glow;x.fill();
+    x.fillStyle=dot;x.shadowBlur=18;x.shadowColor=glow;x.fill();
     for(let i=0;i<shoot.trail.length-1;i++){
       const a=shoot.trail[i], b=shoot.trail[i+1];
       x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);
       const g=x.createLinearGradient(a.x,a.y,b.x,b.y);
-      g.addColorStop(0,`rgba(180,230,255,${0.35*(1-i/22)})`);
-      g.addColorStop(1,'rgba(180,230,255,0)');
+      g.addColorStop(0,isLight?`rgba(0,0,0,${0.35*(1-i/22)})`:`rgba(180,230,255,${0.35*(1-i/22)})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
       x.strokeStyle=g; x.lineWidth=2.2-(i*0.08); x.stroke();
     }
     x.restore();
@@ -248,8 +262,9 @@ main{position:relative;z-index:1;max-width:1280px;margin:0 auto;padding:22px 12p
   function T(ts){
     const dt=ts-(tLast||ts); tLast=ts;
     x.clearRect(0,0,w,h);
+    const starVar=(window.__wintraThemeColor&&window.__wintraThemeColor('--star'))|| (document.documentElement.classList.contains('theme-light')?'#000':'#fff');
     for(const a of field){
-      x.globalAlpha=a.alpha; x.beginPath();x.arc(a.x,a.y,a.r,0,Math.PI*2);x.fillStyle='#fff';x.fill();
+      x.globalAlpha=a.alpha; x.beginPath();x.arc(a.x,a.y,a.r,0,Math.PI*2);x.fillStyle=starVar;x.fill();
       a.x+=a.dx*(dt/16); a.y+=a.dy*(dt/16); wrap(a);
     }
     x.globalAlpha=1;
@@ -320,7 +335,7 @@ function bookCard(b){
     <div class="meta">
       ${owned?`<div class="prog" aria-label="okuma yüzdesi"><div class="bar" style="width:${pct}%" data-progbar="${b.id}"></div></div>`:''}
       <div class="ttl" style="margin-top:${owned? '8px':'0'}">${b.t}</div>
-      <div class="auth">by ${b.y}${owned?` · <span class="muted" data-progtext="${b.id}" style="color:#b8d2e2">${pct}% okundu</span>`:''}</div>
+      <div class="auth">by ${b.y}${owned?` · <span class="muted" data-progtext="${b.id}" style="color:var(--mut)">${pct}% okundu</span>`:''}</div>
       <div class="price"><div class="num" data-id="${b.id}">—</div><div class="discount" data-dd="${b.id}"></div></div>
       <div class="rowbtns">
         ${
@@ -344,7 +359,7 @@ function fillRows(filtered=books){
 
   const ownedIds=getOwned();
   const mine=books.filter(b=>ownedIds.includes(b.id));
-  if(mine.length===0){ rowsEl.mine.innerHTML='<div style="color:#88a9b6;margin:6px 8px">Satın aldığın kitaplar burada görünecek.</div>'; }
+  if(mine.length===0){ rowsEl.mine.innerHTML='<div style="color:var(--mut);margin:6px 8px">Satın aldığın kitaplar burada görünecek.</div>'; }
   else mine.forEach(b=>rowsEl.mine.appendChild(bookCard(b)));
 
   filtered.filter(b=>b.latest).forEach(b=>rowsEl.latest.appendChild(bookCard(b)));
@@ -417,14 +432,14 @@ function openCart(){drawer.classList.add('open');}
 function renderCart(){
   const wrap=document.getElementById('cartItems'); wrap.innerHTML='';
   const ccy=document.getElementById('currency').value;
-  if(baskets.size===0){ wrap.innerHTML='<p style="color:#9fb4c0">Sepet boş.</p>'; updateCartTotals(); return; }
+  if(baskets.size===0){ wrap.innerHTML='<p style="color:var(--mut)">Sepet boş.</p>'; updateCartTotals(); return; }
   for(const {id,qty} of baskets.values()){
     const b=books.find(x=>x.id===id);
     const item=el('div','item',`
       <div class="ph" style="background-image:url('${b.cover}')"></div>
       <div>
         <div style="font-weight:800">${b.t}</div>
-        <div style="color:#87a2af;font-size:13px">by ${b.y} · ${b.cat}</div>
+        <div style="color:var(--mut);font-size:13px">by ${b.y} · ${b.cat}</div>
         <div class="qty" style="margin-top:8px">
           <button data-dec="${id}">Kaldır</button>
           <span>Adet: 1</span>
@@ -527,6 +542,8 @@ init();
     console.assert(document.querySelectorAll('script[data-app="wintra"]').length===1, 'Script iki kez eklenmiş olabilir');
     const btns=[...document.querySelectorAll('.btn')];
     console.assert(btns.length>0, 'Kart butonları render edilmedi');
+    // Tema durumu: HTML sınıfı
+    console.log('theme-light? ', document.documentElement.classList.contains('theme-light'));
   }catch(e){ console.warn('Self test uyarısı:', e); }
 })();
 </script>
