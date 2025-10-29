@@ -5,7 +5,9 @@
   <script>
     (function(){
       var s = localStorage.getItem('wintra_theme');
-      if(!s){ try{ s = matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'; }catch(e){ s='dark'; }
+      if(!s){
+        try{ s = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+        catch(e){ s = 'dark'; }
       }
       if(s==='light') document.documentElement.classList.add('theme-light');
     })();
@@ -37,8 +39,8 @@
       --bg:#f2f6ff; --text:#0b1220; --mut:#405061;
       --star:#000000;                /* açık tema simsiyah yıldız */
       --star-glow:rgba(0,0,0,.98);
-      --card-bg:#ffffff;             /* kırık beyaz kart */
-      --card-border:rgba(0,0,0,.18); /* daha koyu kenarlık */
+      --card-bg:#ffffff;             /* kırık beyaz kart (varsayılan) */
+      --card-border:rgba(0,0,0,.18);
       --chip-border:rgba(0,0,0,.30);
       --shadow-dark:0 10px 26px rgba(0,0,0,.10);
     }
@@ -121,6 +123,45 @@
     .stars{ position:fixed; inset:0; pointer-events:none; z-index:-1 }
     .stars canvas{ width:100%; height:100%; display:block; opacity:.96 }
     html.theme-light .stars canvas{ opacity:.88 }  /* açık temada hafif kıs */
+
+    /* ====== LIGHT THEME İSTEDİKLERİN ====== */
+    /* Kartları yarı saydam siyah yap */
+    html.theme-light .card{
+      background: rgba(0,0,0,.78);
+      border-color: rgba(255,255,255,.08);
+      color:#eaf5ff;
+    }
+    html.theme-light .card .title{ color:#fff; }
+    html.theme-light .card .row  { color:#eaf5ff; }
+    html.theme-light .card .left { color:#b9cce0; }
+
+    /* Görsel alanını da hafif karart (işaretlediğin kısım) */
+    html.theme-light .thumb::after{
+      content:"";
+      position:absolute; inset:0;
+      background: rgba(0,0,0,.35);   /* saydam siyah */
+      pointer-events:none;
+      border-radius:inherit;
+    }
+
+    /* Butonlar koyu kart üzerinde okunaklı */
+    html.theme-light .card .btn{
+      background: rgba(255,255,255,.10);
+      border-color: rgba(255,255,255,.24);
+      color:#eaf5ff;
+    }
+    html.theme-light .card .btn:hover{ background: rgba(255,255,255,.16); }
+
+    /* WTR ile Satın Al: marka gradyanı */
+    html.theme-light .card .btn-primary{
+      background: var(--grad);
+      color:#001a1a;
+      border:0;
+    }
+
+    /* Görsel kenarına ikinci siyah halka (kontrast) */
+    .legendary .thumb{ box-shadow:0 0 0 3px var(--gold), 0 0 0 6px #000; }
+    .rare      .thumb{ box-shadow:0 0 0 3px var(--purple), 0 0 0 6px #000; }
   </style>
 </head>
 <body>
@@ -206,55 +247,16 @@
       }
     });
 
-    /* Yıldız alanı — koyu temada parlak beyaz, açık temada simsiyah */
-    /* ==== LIGHT THEME: tüm kart yarı saydam siyah ==== */
-html.theme-light .card{
-  background: rgba(0,0,0,.78);            /* saydam siyah */
-  border-color: rgba(255,255,255,.08);
-  color: #eaf5ff;
-}
-
-/* Kart içindeki metinler */
-html.theme-light .card .title{ color:#ffffff; }
-html.theme-light .card .row  { color:#eaf5ff; }
-html.theme-light .card .left { color:#b9cce0; }
-
-/* Alt bilgi ve buton satırı: kartla aynı (transparan) kalsın */
-html.theme-light .card .info,
-html.theme-light .card .actions-row{
-  background: transparent;
-}
-
-/* Butonlar (Detay vb.) açık temada koyu kart üzerinde okunur olsun */
-html.theme-light .card .btn{
-  background: rgba(255,255,255,.10);
-  border-color: rgba(255,255,255,.24);
-  color: #eaf5ff;
-}
-html.theme-light .card .btn:hover{
-  background: rgba(255,255,255,.16);
-}
-
-/* WTR ile Satın Al: marka gradyanı + koyu kartta da okunaklı */
-html.theme-light .card .btn-primary{
-  background: var(--grad);
-  color: #001a1a;
-  border: 0;
-}
-
-/* Görsel kenarına ikinci siyah halka kalsın (kontrast için) */
-.legendary .thumb{ box-shadow:0 0 0 3px var(--gold), 0 0 0 6px #000; }
-.rare      .thumb{ box-shadow:0 0 0 3px var(--purple), 0 0 0 6px #000; }
-
+    /* Yıldız alanı */
     (function stars(){
-      const c = document.getElementById('space'), x = c.getContext('2d'); let stars=[], w=0, h=0;
+      const c = document.getElementById('space'), x = c.getContext('2d'); let stars=[];
       function resize(){
         const dpr = Math.max(1, Math.min(2, devicePixelRatio||1));
-        w = c.width  = Math.floor(innerWidth * dpr);
-        h = c.height = Math.floor(innerHeight * dpr);
+        c.width  = Math.floor(innerWidth * dpr);
+        c.height = Math.floor(innerHeight * dpr);
         c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
         x.setTransform(dpr,0,0,dpr,0,0);
-        const count = Math.round((innerWidth*innerHeight)/3200);         /* yoğunluk */
+        const count = Math.round((innerWidth*innerHeight)/3200);
         stars = Array.from({length:count},()=>({
           x:Math.random()*innerWidth, y:Math.random()*innerHeight,
           r:1.0+Math.random()*1.6, z:.55+Math.random()*1.5
@@ -270,7 +272,7 @@ html.theme-light .card .btn-primary{
         for(const s of stars){
           x.beginPath(); x.arc(s.x,s.y,s.r,0,Math.PI*2);
           x.fillStyle = color; x.shadowColor = glow; x.shadowBlur = 13*s.z; x.fill(); x.shadowBlur = 0;
-          s.x -= 0.18*s.z; s.y += 0.09*s.z;          /* sağ üst → sol alt akış */
+          s.x -= 0.18*s.z; s.y += 0.09*s.z;
           if(s.x < -3) s.x = innerWidth+3;
           if(s.y > innerHeight+3) s.y = -3;
         }
