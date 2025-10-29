@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <!-- THEME BOOTSTRAP (en üste, CSS'ten önce) -->
+  <!-- THEME BOOTSTRAP (CSS'ten önce) -->
   <script>
     (function () {
       var saved = localStorage.getItem('wintra_theme');
@@ -9,8 +9,7 @@
         try { saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
         catch(e) { saved = 'dark'; }
       }
-      if (saved === 'light') document.documentElement.classList.add('theme-light');
-      else document.documentElement.classList.remove('theme-light');
+      document.documentElement.classList.toggle('theme-light', saved==='light');
     })();
   </script>
 
@@ -21,18 +20,23 @@
   <link rel="icon" href="../assets/wtr.png" />
   <style>
     :root{
-      --bg:#0a1320; --text:#e6f5ff;
-      --card:#0f1d30; --mut:#a8cbbd;
+      --bg:#000000;            /* koyu temada siyah arka plan */
+      --text:#eaf5ff;
+      --mut:#9fb4c0;
+      --card:#0f1d30;
       --gold:#ffd700; --purple:#b500ff; --chip:#1b2a42;
       --grad: linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);
-      --star:#ffffff; /* koyu temada yıldızlar beyaz */
+      --star:#ffffff;          /* koyu temada yıldız rengi */
+      --tile:220px;            /* KART GENİŞLİĞİ (küçültüldü) */
     }
     .theme-light{
-      --bg:#e9eef6; --text:#0b1220;
-      --card:#ffffff; --mut:#5a6a7a;
+      --bg:#eef3f9;
+      --text:#0b1220;
+      --mut:#55697a;
+      --card:#ffffff;
       --chip:#eef3ff;
       --grad: linear-gradient(90deg,#6feccf,#8c7bff,#6ea0ff);
-      --star:#000000; /* açık temada yıldızlar siyah */
+      --star:#000000;          /* açık temada yıldız rengi */
     }
 
     *{box-sizing:border-box}
@@ -46,42 +50,41 @@
     /* header */
     header{
       display:flex; align-items:center; justify-content:space-between;
-      gap:12px; padding:16px 20px; max-width:1120px; margin:0 auto;
-      position:sticky; top:0; z-index:2;
-      backdrop-filter: blur(8px);
+      gap:12px; padding:12px 16px; max-width:1120px; margin:0 auto;
+      position:sticky; top:0; z-index:2; backdrop-filter: blur(8px);
     }
     .theme-light header{ background: rgba(255,255,255,.6); }
-    header .left{display:flex; align-items:flex-start; gap:12px}
-    h1{font-size: clamp(26px,4.6vw,40px); margin:0}
-    .sub{color:var(--mut); margin:6px 0 0}
+    .left{display:flex; align-items:flex-start; gap:10px}
+    h1{font-size: clamp(22px,4vw,34px); margin:0}
+    .sub{color:var(--mut); margin:4px 0 0; font-size:14px}
     .toolbar{display:flex; gap:8px; align-items:center}
     .ghost{
-      padding:10px 12px; border-radius:12px; cursor:pointer; font-weight:700;
+      padding:9px 12px; border-radius:12px; cursor:pointer; font-weight:700;
       background:transparent; color:var(--text);
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2);
-      border:0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.2); border:0;
     }
     .theme-light .ghost{ box-shadow: inset 0 0 0 1px rgba(0,0,0,.18); }
     .back{
-      display:inline-block; text-decoration:none; padding:10px 14px; border-radius:14px;
-      background:var(--grad); color:#000; font-weight:700; box-shadow:0 6px 18px rgba(111,240,195,.25);
+      display:inline-block; text-decoration:none; padding:9px 12px; border-radius:12px;
+      background:var(--grad); color:#000; font-weight:800; box-shadow:0 6px 18px rgba(111,240,195,.25);
     }
     .badge{ margin-left:8px; font-size:12px; opacity:.85 }
 
-    /* grid */
+    /* grid (küçültülmüş kartlar) */
     .grid{
-      max-width:1120px; margin:16px auto 40px; padding:0 20px;
-      display:grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap:18px;
-      position:relative; z-index:1;
+      max-width:1120px; margin:10px auto 32px; padding:0 16px;
+      display:grid; grid-template-columns:repeat(auto-fit,minmax(var(--tile),1fr)); gap:14px;
+      justify-items:center; position:relative; z-index:1;
     }
     .card{
+      width:100%; max-width:var(--tile);
       background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.08); border-radius:18px; overflow:hidden;
-      box-shadow:0 10px 30px rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.08); border-radius:16px; overflow:hidden;
+      box-shadow:0 10px 24px rgba(0,0,0,.35);
       display:flex; flex-direction:column;
     }
     .theme-light .card{
-      background:#fff; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 30px rgba(0,0,0,.06);
+      background:#fff; border:1px solid rgba(0,0,0,.06); box-shadow:0 10px 24px rgba(0,0,0,.06);
     }
 
     .thumb{ aspect-ratio:1/1; background:#0c1a2b; display:grid; place-items:center; position:relative; }
@@ -91,8 +94,8 @@
     .rare{ outline:2px solid var(--purple) }
 
     .chip{
-      position:absolute; left:10px; top:10px; padding:6px 10px; border-radius:999px;
-      background:var(--chip); border:1px solid rgba(255,255,255,.18); font-size:12px
+      position:absolute; left:8px; top:8px; padding:5px 9px; border-radius:999px;
+      background:var(--chip); border:1px solid rgba(255,255,255,.18); font-size:11px
     }
     .theme-light .chip{ border-color:rgba(0,0,0,.12); }
     .chip.Rare{
@@ -106,23 +109,23 @@
       box-shadow:0 0 10px rgba(255,215,0,.5);
     }
 
-    .info{ padding:14px; display:grid; gap:8px }
-    .title{ font-weight:800; font-size:18px }
-    .row{ display:flex; align-items:center; justify-content:space-between; gap:10px; color:#cfe7ff }
+    .info{ padding:10px; display:grid; gap:6px }
+    .title{ font-weight:800; font-size:16px }
+    .row{ display:flex; align-items:center; justify-content:space-between; gap:8px; color:#cfe7ff; font-size:13px }
     .theme-light .row{ color:#334; }
     .price{ font-weight:800 }
-    .left{ color:var(--mut); font-size:14px }
-    .actions{ display:flex; gap:8px; padding:14px; padding-top:0 }
+    .left{ color:var(--mut) }
+    .actions{ display:flex; gap:6px; padding:10px; padding-top:0 }
     .btn{
-      flex:1; border:0; cursor:pointer; padding:10px 12px; border-radius:12px; font-weight:700;
+      flex:1; border:0; cursor:pointer; padding:8px 10px; border-radius:11px; font-weight:700; font-size:13px;
       background:#14263b; color:#d7f6ff; border:1px solid rgba(147,231,255,.35)
     }
     .theme-light .btn{ background:#f4f8ff; color:#0b1220; border:1px solid rgba(0,0,0,.08); }
     .btn-primary{ background:var(--grad); color:#000; border:0; box-shadow:0 6px 16px rgba(111,240,195,.25) }
 
-    .note{ max-width:1120px; margin:6px auto 20px; padding:0 20px; color:var(--mut); font-size:14px }
+    .note{ max-width:1120px; margin:4px auto 10px; padding:0 16px; color:var(--mut); font-size:13px }
 
-    /* stars layer */
+    /* yıldız katmanı */
     .stars{position:fixed; inset:0; pointer-events:none; z-index:0}
     .stars canvas{width:100%; height:100%; display:block; opacity:.35}
   </style>
@@ -148,14 +151,14 @@
   <section class="grid" id="grid"></section>
 
   <script>
-    /* ===== Tema toggle (her zaman <html> üzerinde) ===== */
+    /* Tema toggle */
     document.getElementById('themeToggle')?.addEventListener('click', ()=>{
       const isLight = !document.documentElement.classList.contains('theme-light');
       document.documentElement.classList.toggle('theme-light', isLight);
       localStorage.setItem('wintra_theme', isLight ? 'light' : 'dark');
     });
 
-    /* ===== Ana sayfa dönüş linki: GitHub Pages tabanı ===== */
+    /* Ana sayfa linki: GitHub Pages tabanı */
     (function fixBase(){
       try{
         let base = '/';
@@ -167,9 +170,8 @@
       }catch(e){ console.warn('fixBase hata:', e); }
     })();
 
-    /* ===== Yapılandırma ===== */
-    const DEMO_MODU = true; // false yapınca mint/ödeme bağlanacak
-    // DİKKAT: "image" alanı uzantısız baz ad. (uzantıyı loader deneyecek)
+    /* Konfig */
+    const DEMO_MODU = true;
     const NFTS = [
       { id:0, name:"Data Askeri", class:"Legendary", priceWTR:10000, supply:20, minted:0, image:"../assets/nft/data-askeri" },
       { id:1, name:"Gölge",       class:"Rare",      priceWTR:2000,  supply:50, minted:0, image:"../assets/nft/golge" },
@@ -177,7 +179,7 @@
     ];
     const CANDIDATE_EXTS = [".webp",".jpg",".jpeg",".png"];
 
-    /* ===== Grid UI ===== */
+    /* Grid UI */
     const grid = document.getElementById("grid");
     for (const n of NFTS) {
       const left = Math.max(n.supply - n.minted, 0);
@@ -206,44 +208,33 @@
       `;
       grid.appendChild(el);
 
-      // --- Akıllı görsel yükleyici: .webp → .jpg → .jpeg → .png → SVG
+      /* Akıllı görsel yükleyici */
       el.querySelectorAll('img').forEach(img => {
-        const base = img.getAttribute('data-base');
-        let idx = 0;
-        function tryNext() {
-          if (idx < CANDIDATE_EXTS.length) {
-            img.src = base + CANDIDATE_EXTS[idx++];
-          } else {
-            img.onerror = null;
-            img.src = 'data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name));
-          }
+        const base = img.getAttribute('data-base'); let i = 0;
+        function tryNext(){
+          if (i < CANDIDATE_EXTS.length) img.src = base + CANDIDATE_EXTS[i++]
+          else { img.onerror=null; img.src='data:image/svg+xml,' + encodeURIComponent(fallbackSVG(n.name)); }
         }
-        img.onerror = tryNext;
-        tryNext();
+        img.onerror = tryNext; tryNext();
       });
     }
 
-    /* ===== Butonlar ===== */
+    /* Butonlar */
     grid.addEventListener("click", (e)=>{
       const buyId = e.target.closest("[data-buy]")?.getAttribute("data-buy");
       const detId = e.target.closest("[data-details]")?.getAttribute("data-details");
-
-      if (detId !== null && detId !== undefined) {
+      if (detId != null) {
         const n = NFTS.find(x=> String(x.id) === String(detId));
         alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`);
       }
-
-      if (buyId !== null && buyId !== undefined) {
+      if (buyId != null) {
         const n = NFTS.find(x=> String(x.id) === String(buyId));
-        if (DEMO_MODU) {
-          location.href = `../pay/index.html?nft=${n.id}&qty=1&demo=1`;
-        } else {
-          alert("Gerçek mint akışı yakında bağlanacak.");
-        }
+        if (DEMO_MODU) location.href = `../pay/index.html?nft=${n.id}&qty=1&demo=1`;
+        else alert("Gerçek mint akışı yakında bağlanacak.");
       }
     });
 
-    /* ===== Fallback SVG ===== */
+    /* Fallback SVG */
     function fallbackSVG(title){
       return `
         <svg xmlns='http://www.w3.org/2000/svg' width='1024' height='1024'>
@@ -253,16 +244,15 @@
           <rect width='100%' height='100%' fill='url(#g)'/>
           <text x='50%' y='50%' dominant-baseline='middle' text-anchor='middle'
             fill='#9fd4ff' font-size='54' font-family='system-ui' opacity='.9'>${title}</text>
-        </svg>
-      `;
+        </svg>`;
     }
 
-    /* ===== Yıldız alanı — tema uyumlu + %20 hızlı ===== */
+    /* Yıldız alanı — tema uyumlu + %20 hızlı */
     (function stars(){
       const c=document.getElementById('space'),x=c.getContext('2d');
       function size(){ c.width=innerWidth; c.height=innerHeight }
       let field=[];
-      function init(n=160){
+      function init(n=180){
         field = Array.from({length:n}, ()=>({
           x:Math.random()*c.width, y:Math.random()*c.height,
           z:0.35 + Math.random()*1.2, r:0.7 + Math.random()*1.4
@@ -276,13 +266,12 @@
         for(const s of field){
           x.beginPath(); x.arc(s.x, s.y, s.r, 0, Math.PI*2);
           x.fillStyle = color; x.shadowBlur = 8*s.z; x.shadowColor = glow; x.fill();
-          s.x += 0.12 * s.z;           /* önce ~0.10 → %20 artış */
+          s.x += 0.12 * s.z;                      /* önce ~0.10 → %20 artış */
           if(s.x > c.width+2){ s.x = -2; s.y = Math.random()*c.height; }
         }
         requestAnimationFrame(draw);
       }
-      size(); init();
-      draw();
+      size(); init(); draw();
       addEventListener('resize',()=>{ size(); init(field.length); });
     })();
   </script>
