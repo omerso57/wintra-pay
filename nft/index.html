@@ -1,11 +1,12 @@
 <!doctype html>
 <html lang="tr">
 <head>
-  <!-- TEMA BOOTSTRAP -->
+  <!-- THEME BOOTSTRAP (mutlaka en üstte) -->
   <script>
     (function(){
       var s = localStorage.getItem('wintra_theme');
-      if(!s){ try{ s = matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'; }catch(e){ s='dark'; } }
+      if(!s){ try{ s = matchMedia('(prefers-color-scheme: light)').matches?'light':'dark'; }catch(e){ s='dark'; }
+      }
       if(s==='light') document.documentElement.classList.add('theme-light');
     })();
   </script>
@@ -16,23 +17,33 @@
   <link rel="icon" href="../assets/wtr.png"/>
 
   <style>
+    /* ========= TOKENS ========= */
     :root{
       --bg:#000; --text:#e6f5ff; --mut:#a8cbbd;
-      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);   /* WTR ana sayfa gradyanı */
+      --grad:linear-gradient(90deg,#7df8d3,#a98cff,#dce6f0);   /* WTR ana gradient */
       --gold:#FFD700; --purple:#B500FF;
-      --star:#ffffff; --star-glow:rgba(220,238,255,1);
-      --card-bg:rgba(255,255,255,.05);
-      --card-bd:rgba(255,255,255,.10);
-      --chip-bd:rgba(255,255,255,.28);
+
+      --star:#ffffff;                 /* koyu tema yıldız */
+      --star-glow:rgba(200,230,255,.95);
+
+      --card-bg:rgba(255,255,255,.04);
+      --card-border:rgba(255,255,255,.14);
+      --chip-border:rgba(255,255,255,.26);
+
+      --shadow-dark:0 10px 26px rgba(0,0,0,.35);
+      --shadow-inset:0 0 0 1px rgba(255,255,255,.10) inset;
     }
     html.theme-light{
       --bg:#f2f6ff; --text:#0b1220; --mut:#405061;
-      --star:#000000; --star-glow:rgba(0,0,0,1);               /* açık temada simsiyah yıldız */
-      --card-bg:#fbfdff;                                       /* kırık beyaz */
-      --card-bd:rgba(0,0,0,.24);                               /* daha koyu kenarlık */
-      --chip-bd:rgba(0,0,0,.32);
+      --star:#000000;                /* açık tema simsiyah yıldız */
+      --star-glow:rgba(0,0,0,.98);
+      --card-bg:#ffffff;             /* kırık beyaz kart */
+      --card-border:rgba(0,0,0,.18); /* daha koyu kenarlık */
+      --chip-border:rgba(0,0,0,.30);
+      --shadow-dark:0 10px 26px rgba(0,0,0,.10);
     }
 
+    /* ========= BASE ========= */
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
@@ -40,90 +51,90 @@
       font:500 15px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;
     }
 
+    /* header */
     header{
-      max-width:1200px; margin:22px auto 6px; padding:0 16px;
+      max-width:1200px; margin:20px auto 4px; padding:0 14px;
       display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center;
     }
     h1{margin:0; font-size:clamp(26px,4.6vw,40px)}
     .sub,.note{color:var(--mut)}
-    .note{max-width:1200px; margin:6px auto 10px; padding:0 16px}
+    .note{max-width:1200px; margin:6px auto 10px; padding:0 14px}
 
-    /* BUTONLAR (özgüllük artırıldı) */
-    .actions .btn, .toolbar .btn, .btn{
-      border-radius:12px; padding:10px 12px; font-weight:700; cursor:pointer;
-      border:1px solid var(--card-bd) !important;
-      background:rgba(255,255,255,.06) !important; color:var(--text) !important;
+    /* buttons */
+    .btn{
+      border:1px solid var(--card-border);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:700; cursor:pointer;
     }
-    html.theme-light .actions .btn, html.theme-light .btn{
-      background:rgba(0,0,0,.06) !important;
-    }
-
-    /* WTR CTA — ana sayfa gradyanı + siyah yazı + gölge */
-    .btn-primary{
-      background:var(--grad) !important; border:0 !important;
-      color:#001a1a !important;
-      box-shadow:0 8px 22px rgba(111,240,195,.28), 0 0 0 1px rgba(255,255,255,.12) inset !important;
+    html.theme-light .btn{ background:rgba(0,0,0,.06); }
+    .btn-cta{
+      background:var(--grad); border:0; color:#001a1a;
+      box-shadow:0 8px 18px rgba(111,240,195,.25);
     }
 
-    /* GRID — NFT’leri hizala, boşlukları kıs */
+    /* ========= GRID & CARDS ========= */
     .grid{
-      max-width:1200px; margin:6px auto 50px; padding:0 16px;
-      display:grid; gap:10px;
+      max-width:1200px; margin:8px auto 60px; padding:0 14px;
+      display:grid; gap:12px;                        /* daha sıkı */
       grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
       justify-items:center; align-items:start;
     }
-
-    /* KART — dikdörtgen, küçük ve okunaklı */
     .card{
-      width:240px; border-radius:16px; overflow:hidden;
-      background:var(--card-bg); border:1px solid var(--card-bd);
-      box-shadow:0 8px 24px rgba(0,0,0,.30);
+      width:230px; border-radius:16px; overflow:hidden;
+      background:var(--card-bg); border:1px solid var(--card-border);
+      box-shadow:var(--shadow-dark);
       display:flex; flex-direction:column;
     }
-    html.theme-light .card{ box-shadow:0 8px 18px rgba(0,0,0,.08) }
-
     .thumb{
-      width:220px; aspect-ratio:3/4; margin:12px auto 0; border-radius:12px;
+      width:210px; aspect-ratio:3/4; margin:12px auto 0; border-radius:12px;
       overflow:hidden; background:#0c1a2b; position:relative;
     }
     .thumb img{ width:100%; height:100%; object-fit:cover; display:block }
-
-    /* Sınıf çerçevesi */
     .legendary .thumb{ box-shadow:0 0 0 3px var(--gold) }
-    .rare .thumb{ box-shadow:0 0 0 3px var(--purple) }
+    .rare .thumb     { box-shadow:0 0 0 3px var(--purple) }
 
-    /* RARITY CHIP */
     .chip{
       position:absolute; left:10px; top:10px; padding:6px 10px; border-radius:999px;
-      font-size:12px; border:1px solid var(--chip-bd);
+      font-size:12px; border:1px solid var(--chip-border);
     }
     .chip.Legendary{ background:linear-gradient(90deg,#ffd700,#fff2a8,#ffd700); color:#000 }
-    .chip.Rare{ background:linear-gradient(90deg,#b500ff,#e37fff); color:#fff }
+    .chip.Rare     { background:linear-gradient(90deg,#b500ff,#e37fff); color:#fff }
 
-    .info{ padding:12px 14px 0; display:grid; gap:8px }
+    .info{ padding:10px 12px 0; display:grid; gap:6px }
     .title{ font-weight:800; font-size:18px }
     .row{ display:flex; justify-content:space-between; align-items:center }
-    .left{ color:var(--mut); font-size:14px }
+    .left{ color:var(--mut); font-size:13px }
 
-    .actions{ display:flex; gap:8px; padding:12px 14px 14px; margin-top:auto }
+    .actions-row{
+      display:flex; gap:8px; padding:10px 12px 12px; margin-top:auto;
+    }
+    /* WTR renkte satın al (ana gradient + iç gölge) */
+    .btn-primary{
+      background:var(--grad); border:0; color:#001a1a;
+      box-shadow:0 10px 22px rgba(111,240,195,.28), var(--shadow-inset);
+    }
 
-    /* YILDIZLAR */
+    /* ========= STARS ========= */
     .stars{ position:fixed; inset:0; pointer-events:none; z-index:-1 }
-    .stars canvas{ width:100%; height:100%; display:block; opacity:.98 }
-    html.theme-light .stars canvas{ opacity:.92 } /* açık temada siyahlar belirgin */
+    .stars canvas{ width:100%; height:100%; display:block; opacity:.96 }
+    html.theme-light .stars canvas{ opacity:.88 }  /* açık temada hafif kıs */
   </style>
 </head>
 <body>
+  <!-- Arkaplan yıldızlar -->
   <div class="stars"><canvas id="space"></canvas></div>
 
-  <header class="toolbar">
+  <header>
     <div>
       <h1>NFT Store <span style="opacity:.6;font-size:14px">v1</span></h1>
       <p class="sub">Wintra’nın ilk koleksiyonu: Data Askeri, Gölge ve CyberCity.</p>
     </div>
     <div>
       <button id="themeToggle" class="btn">🌓 Tema</button>
-      <a href="../" class="btn btn-primary">← Ana sayfa</a>
+      <a href="../" class="btn btn-cta">← Ana sayfa</a>
     </div>
   </header>
 
@@ -132,27 +143,32 @@
   <section id="grid" class="grid"></section>
 
   <script>
-    /* Tema toggle: doğrudan <html> üzerine yaz */
-    document.getElementById('themeToggle').addEventListener('click', ()=>{
-      const html=document.documentElement;
-      const light=html.classList.toggle('theme-light');
-      localStorage.setItem('wintra_theme', light?'light':'dark');
-    });
+    /* Tema düğmesi */
+    (function(){
+      const btn = document.getElementById('themeToggle');
+      btn.addEventListener('click',()=>{
+        const html = document.documentElement;
+        const light = html.classList.toggle('theme-light');
+        localStorage.setItem('wintra_theme', light?'light':'dark');
+      });
+    })();
 
-    const DEMO=true;
-    const NFTS=[
+    /* Veri */
+    const DEMO = true;
+    const NFTS = [
       {id:0,name:"Data Askeri",class:"Legendary",priceWTR:10000,supply:20,minted:0,image:"../assets/nft/data-askeri"},
-      {id:1,name:"Gölge",class:"Rare",priceWTR:2000,supply:50,minted:0,image:"../assets/nft/golge"},
-      {id:2,name:"CyberCity",class:"Legendary",priceWTR:25000,supply:10,minted:0,image:"../assets/nft/cybercity"}
+      {id:1,name:"Gölge",      class:"Rare",      priceWTR:2000, supply:50,minted:0,image:"../assets/nft/golge"},
+      {id:2,name:"CyberCity",  class:"Legendary", priceWTR:25000,supply:10,minted:0,image:"../assets/nft/cybercity"}
     ];
-    const EXTS=[".webp",".jpg",".jpeg",".png"];
-    const grid=document.getElementById('grid');
+    const EXTS = [".webp",".jpg",".jpeg",".png"];
+    const grid = document.getElementById('grid');
 
+    /* Kartlar */
     for(const n of NFTS){
-      const left=Math.max(n.supply-n.minted,0);
-      const card=document.createElement('article');
-      card.className="card "+(n.class.toLowerCase()==='legendary'?'legendary':'rare');
-      card.innerHTML=`
+      const left = Math.max(n.supply - n.minted, 0);
+      const card = document.createElement('article');
+      card.className = "card " + (n.class.toLowerCase()==='legendary'?'legendary':'rare');
+      card.innerHTML = `
         <div class="thumb">
           <img data-base="${n.image}" alt="${n.name}">
           <div class="chip ${n.class}">${n.class}</div>
@@ -164,50 +180,60 @@
             <div class="left">Kalan: ${left}/${n.supply}</div>
           </div>
         </div>
-        <div class="actions">
+        <div class="actions-row">
           <button class="btn" data-details="${n.id}">Detay</button>
           <button class="btn btn-primary" data-buy="${n.id}">WTR ile Satın Al</button>
         </div>`;
       grid.appendChild(card);
 
-      const img=card.querySelector('img'); let i=0;
-      img.onerror=()=>{ if(i<EXTS.length) img.src=img.dataset.base+EXTS[i++]; };
-      img.src=img.dataset.base+EXTS[i++];
+      /* Akıllı görsel yükleyici */
+      const img = card.querySelector('img'); let i=0;
+      img.onerror = ()=>{ if(i<EXTS.length) img.src = img.dataset.base + EXTS[i++]; };
+      img.src = img.dataset.base + EXTS[i++];
     }
 
+    /* Butonlar */
     grid.addEventListener('click',(e)=>{
-      const det=e.target.closest('[data-details]')?.getAttribute('data-details');
-      const buy=e.target.closest('[data-buy]')?.getAttribute('data-buy');
+      const det = e.target.closest('[data-details]')?.getAttribute('data-details');
+      const buy = e.target.closest('[data-buy]')?.getAttribute('data-buy');
       if(det!=null){
-        const n=NFTS.find(x=>String(x.id)===det);
+        const n = NFTS.find(x=>String(x.id)===det);
         alert(`${n.name}\nSınıf: ${n.class}\nFiyat: ${n.priceWTR} WTR\nAdet: ${n.supply}`);
       }
       if(buy!=null){
-        const n=NFTS.find(x=>String(x.id)===buy);
-        if(DEMO) location.href=`../pay/index.html?nft=${n.id}&qty=1&demo=1`;
+        const n = NFTS.find(x=>String(x.id)===buy);
+        if(DEMO) location.href = `../pay/index.html?nft=${n.id}&qty=1&demo=1`;
       }
     });
 
-    /* Yıldız alanı — siyah/beyaz + parlak glow, %20 daha hızlı */
+    /* Yıldız alanı — koyu temada parlak beyaz, açık temada simsiyah */
     (function stars(){
-      const c=document.getElementById('space'),x=c.getContext('2d'); let stars=[],w=0,h=0;
+      const c = document.getElementById('space'), x = c.getContext('2d'); let stars=[], w=0, h=0;
       function resize(){
-        const dpr=Math.max(1,Math.min(2,devicePixelRatio||1));
-        w=c.width=Math.floor(innerWidth*dpr); h=c.height=Math.floor(innerHeight*dpr);
-        c.style.width=innerWidth+'px'; c.style.height=innerHeight+'px';
+        const dpr = Math.max(1, Math.min(2, devicePixelRatio||1));
+        w = c.width  = Math.floor(innerWidth * dpr);
+        h = c.height = Math.floor(innerHeight * dpr);
+        c.style.width = innerWidth+'px'; c.style.height = innerHeight+'px';
         x.setTransform(dpr,0,0,dpr,0,0);
-        const count=Math.round((innerWidth*innerHeight)/3200);
-        stars=Array.from({length:count},()=>({x:Math.random()*innerWidth,y:Math.random()*innerHeight,r:1+Math.random()*1.8,z:.6+Math.random()*1.6}));
+        const count = Math.round((innerWidth*innerHeight)/3200);         /* yoğunluk */
+        stars = Array.from({length:count},()=>({
+          x:Math.random()*innerWidth, y:Math.random()*innerHeight,
+          r:1.0+Math.random()*1.6, z:.55+Math.random()*1.5
+        }));
       }
-      function col(){ const s=getComputedStyle(document.documentElement); return {c:s.getPropertyValue('--star').trim(),g:s.getPropertyValue('--star-glow').trim()}; }
+      function col(){
+        const cs = getComputedStyle(document.documentElement);
+        return {c:cs.getPropertyValue('--star').trim(), g:cs.getPropertyValue('--star-glow').trim()};
+      }
       function tick(){
-        const {c:color,g:glow}=col();
+        const {c:color,g:glow} = col();
         x.clearRect(0,0,innerWidth,innerHeight);
         for(const s of stars){
           x.beginPath(); x.arc(s.x,s.y,s.r,0,Math.PI*2);
-          x.fillStyle=color; x.shadowColor=glow; x.shadowBlur=14*s.z; x.fill(); x.shadowBlur=0;
-          s.x-=0.192*s.z; s.y+=0.096*s.z;
-          if(s.x<-3) s.x=innerWidth+3; if(s.y>innerHeight+3) s.y=-3;
+          x.fillStyle = color; x.shadowColor = glow; x.shadowBlur = 13*s.z; x.fill(); x.shadowBlur = 0;
+          s.x -= 0.18*s.z; s.y += 0.09*s.z;          /* sağ üst → sol alt akış */
+          if(s.x < -3) s.x = innerWidth+3;
+          if(s.y > innerHeight+3) s.y = -3;
         }
         requestAnimationFrame(tick);
       }
