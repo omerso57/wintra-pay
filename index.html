@@ -1,6 +1,18 @@
 <!doctype html>
 <html lang="tr">
 <head>
+  <!-- THEME BOOTSTRAP (en üste, CSS'ten önce) -->
+<script>
+  (function () {
+    var saved = localStorage.getItem('wintra_theme');
+    if (!saved) {
+      try { saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; }
+      catch(e) { saved = 'dark'; }
+    }
+    if (saved === 'light') document.documentElement.classList.add('theme-light');
+  })();
+</script>
+
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wintra • Navbar v10 (Roadmap + Theme) + Faster Stars</title>
