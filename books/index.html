@@ -1,6 +1,15 @@
 <!doctype html>
 <html lang="tr">
 <head>
+  <script>
+  (function(){var s=localStorage.getItem('wintra_theme');
+  if(!s){try{s=matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';}
+  catch(e){s='dark';}}
+  if(s==='light')document.documentElement.classList.add('theme-light');})();
+</script>
+<link rel="stylesheet" href="../assets/theme.css">
+<script src="../assets/wintra-theme.js"></script>
+  
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Wintra · Kitaplar</title>
